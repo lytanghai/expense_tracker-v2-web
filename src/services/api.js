@@ -8,6 +8,7 @@ export function setLoadingStore(store) {
 
 // Base URLs from VITE
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const GUARD_BASE_URL = import.meta.env.VITE_API_GUARD_BASE_URL;
 export const AUTH_URL = `${BASE_URL}${import.meta.env.VITE_AUTH_CONTEXT_PATH}`;
 export const EXPENSE_URL = `${BASE_URL}${import.meta.env.VITE_EXPENSE_CONTEXT_PATH}`;
 
