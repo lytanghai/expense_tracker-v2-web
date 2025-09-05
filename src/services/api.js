@@ -74,23 +74,35 @@ attachInterceptors(guardApi);
 
 // ================== Auth APIs ==================
 export async function loginUser(credentials) {
-  return guardApi.post(`${import.meta.env.VITE_AUTH_CONTEXT_PATH}/login`, credentials)
-    .then(res => {
-      if (res.data.status !== "success") {
-        return Promise.reject(new Error(res.data.message || "Login failed"))
-      } else if (res.data.detail === "Invalid Credential!") {
-        alert("INVALID CREDENTIAL!")
-      } else {
-        const { token, username } = res.data.data
-        localStorage.setItem("token", token)
-        localStorage.setItem("username", username || credentials.username)
+  try {
+    const res = await guardApi.post(`${import.meta.env.VITE_AUTH_CONTEXT_PATH}/login`, credentials);
+
+    if (res.data.status !== "success") {
+      return Promise.reject(new Error(res.data.message || "Login failed"));
+    } else if (res.data.detail === "Invalid Credential!") {
+      alert("INVALID CREDENTIAL!");
+      return Promise.reject(new Error("Invalid credentials"));
+    } else {
+      const { token, username } = res.data.data;
+
+      // Store token locally
+      localStorage.setItem("token", token);
+      localStorage.setItem("username", username || credentials.username);
+
+      // 🔹 Wake up second microservice
+      try {
+        await api.get("/income/fetch-daily?page=0"); // this calls expenditure-diary server
+        console.log("Expenditure diary server wake-up request sent.");
+      } catch (err) {
+        console.warn("Failed to wake up expenditure diary server:", err);
       }
-      return res.data.data
-    })
-    .catch(err => {
-      console.error("Login error:", err)
-      return Promise.reject(err)
-    })
+    }
+
+    return res.data.data;
+  } catch (err) {
+    console.error("Login error:", err);
+    return Promise.reject(err);
+  }
 }
 
 export async function registerUser(payload) {
