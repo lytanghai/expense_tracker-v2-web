@@ -91,7 +91,12 @@ export async function loginUser(credentials) {
 
       // 🔹 Wake up second microservice
       try {
-        await api.get("/income/fetch-daily?page=0"); // this calls expenditure-diary server
+        const token = localStorage.getItem("token");
+        await api.get("https://expenditure-diary-server.onrender.com/expenditure-diary/income/fetch-daily?page=0", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         console.log("Expenditure diary server wake-up request sent.");
       } catch (err) {
         console.warn("Failed to wake up expenditure diary server:", err);
