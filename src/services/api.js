@@ -9,73 +9,79 @@ export function setLoadingStore(store) {
 // Base URLs from VITE
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const GUARD_BASE_URL = import.meta.env.VITE_API_GUARD_BASE_URL;
-export const AUTH_URL = `${BASE_URL}${import.meta.env.VITE_AUTH_CONTEXT_PATH}`;
+
+export const AUTH_URL = `${GUARD_BASE_URL}${import.meta.env.VITE_AUTH_CONTEXT_PATH}`;
 export const EXPENSE_URL = `${BASE_URL}${import.meta.env.VITE_EXPENSE_CONTEXT_PATH}`;
 
-// Axios instance
+// ================== Axios Instances ==================
 const api = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-    "Access-Control-Allow-Origin": "https://expense-tracker-v2-web.onrender.com",
-    "Access-Control-Allow-Headers": "'Origin, X-Requested-With, Content-Type, Accept"
-  },
+  headers: { "Content-Type": "application/json", "Accept": "application/json" },
 });
 
-// Request interceptor: attach token & show loader
-api.interceptors.request.use(
-  (config) => {
-    loadingStore?.show();
+const guardApi = axios.create({
+  baseURL: GUARD_BASE_URL,
+  headers: { "Content-Type": "application/json", "Accept": "application/json" },
+});
 
-    const token = localStorage.getItem("token");
+// ================== Interceptors ==================
+// Shared request interceptor
+const attachInterceptors = (instance) => {
+  instance.interceptors.request.use(
+    (config) => {
+      loadingStore?.show();
 
-    // Don't attach token to login/register
-    if (
-      token &&
-      !config.url.startsWith(`${AUTH_URL}/login`) &&
-      !config.url.startsWith(`${AUTH_URL}/register`)
-    ) {
-      config.headers.Authorization = `Bearer ${token}`;
+      const token = localStorage.getItem("token");
+
+      // Attach token for non-auth requests
+      if (
+        token &&
+        !config.url.includes("/login") &&
+        !config.url.includes("/register") &&
+        !config.url.includes("/change-password")
+      ) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+
+      return config;
+    },
+    (error) => {
+      loadingStore?.hide();
+      return Promise.reject(error);
     }
+  );
 
-    return config;
-  },
-  (error) => {
-    loadingStore?.hide();
-    return Promise.reject(error);
-  }
-);
-
-// Response interceptor: hide loader
-api.interceptors.response.use(
-  (response) => {
-    loadingStore?.hide();
-    return response;
-  },
-  (error) => {
-    loadingStore?.hide();
-    // If 401/403, redirect to login
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("username");
-      router.push("/login");
+  instance.interceptors.response.use(
+    (response) => {
+      loadingStore?.hide();
+      return response;
+    },
+    (error) => {
+      loadingStore?.hide();
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        router.push("/login");
+      }
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
-);
+  );
+};
 
+// Attach to both api & guardApi
+attachInterceptors(api);
+attachInterceptors(guardApi);
+
+// ================== Auth APIs ==================
 export async function loginUser(credentials) {
-  return api.post("/api/auth/login", credentials)
+  return guardApi.post(`${import.meta.env.VITE_AUTH_CONTEXT_PATH}/login`, credentials)
     .then(res => {
-      console.log(res)
       if (res.data.status !== "success") {
         return Promise.reject(new Error(res.data.message || "Login failed"))
-      } else if (res.data.detail === 'Invalid Credential!') {
+      } else if (res.data.detail === "Invalid Credential!") {
         alert("INVALID CREDENTIAL!")
       } else {
         const { token, username } = res.data.data
-        // Store token
         localStorage.setItem("token", token)
         localStorage.setItem("username", username || credentials.username)
       }
@@ -88,9 +94,14 @@ export async function loginUser(credentials) {
 }
 
 export async function registerUser(payload) {
-  const res = await api.post(`${AUTH_URL}/register`, payload);
+  const res = await guardApi.post(`${import.meta.env.VITE_AUTH_CONTEXT_PATH}/register`, payload);
   if (res.data.status !== "success") throw new Error(res.data.message || "Registration failed");
   return res.data.data;
+}
+
+export async function changePassword(payload) {
+  const res = await guardApi.post(`${import.meta.env.VITE_AUTH_CONTEXT_PATH}/change-password`, payload);
+  return res.data;
 }
 
 export function logout() {
@@ -99,7 +110,7 @@ export function logout() {
   router.push("/login");
 }
 
-// Expense APIs
+// ================== Expense APIs ==================
 export async function fetchExpenses({ category = "", item = "", currency = "", page = 0, size = 10 }) {
   try {
     const res = await api.post(`${EXPENSE_URL}/filter`, { category, item, currency, page, size });
@@ -110,7 +121,6 @@ export async function fetchExpenses({ category = "", item = "", currency = "", p
   }
 }
 
-// api.js
 export async function createExpense(payload) {
   try {
     const res = await api.post("/expense_tracking/create", payload)
@@ -122,7 +132,7 @@ export async function createExpense(payload) {
 }
 
 export async function deleteExpense(id) {
-  const res = await api.post('/expense_tracking/delete', { id })
+  const res = await api.post("/expense_tracking/delete", { id })
   return res.data
 }
 
@@ -131,7 +141,6 @@ export const updateExpense = async (id, data) => {
   return res.data
 }
 
-// Filter Expenses API
 export async function filterExpenses({ category = "", item = "", currency = "", page = 0, size = 10 }) {
   try {
     const res = await api.post(`${EXPENSE_URL}/filter`, {
@@ -147,6 +156,5 @@ export async function filterExpenses({ category = "", item = "", currency = "", 
     throw err
   }
 }
-
 
 export default api;
