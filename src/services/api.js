@@ -15,7 +15,12 @@ export const EXPENSE_URL = `${BASE_URL}${import.meta.env.VITE_EXPENSE_CONTEXT_PA
 // Axios instance
 const api = axios.create({
   baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" ,  "Accept": "application/json"},
+  headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Access-Control-Allow-Origin": "https://expense-tracker-v2-web.onrender.com",
+    "Access-Control-Allow-Headers": "'Origin, X-Requested-With, Content-Type, Accept"
+  },
 });
 
 // Request interceptor: attach token & show loader
@@ -66,9 +71,9 @@ export async function loginUser(credentials) {
       console.log(res)
       if (res.data.status !== "success") {
         return Promise.reject(new Error(res.data.message || "Login failed"))
-      } else if(res.data.detail === 'Invalid Credential!') {
+      } else if (res.data.detail === 'Invalid Credential!') {
         alert("INVALID CREDENTIAL!")
-      }else {
+      } else {
         const { token, username } = res.data.data
         // Store token
         localStorage.setItem("token", token)
@@ -116,7 +121,7 @@ export async function createExpense(payload) {
   }
 }
 
-export async function deleteExpense (id) {
+export async function deleteExpense(id) {
   const res = await api.post('/expense_tracking/delete', { id })
   return res.data
 }
