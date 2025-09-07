@@ -41,6 +41,22 @@ export async function registerUser(payload) {
   }
 }
 
+export async function experimental(payload) {
+  try {
+    const response = await api.post(`${AUTH_URL}/experimental`, payload)
+    const result = response.data
+
+    if (result.status !== "success") {
+      throw new Error(result.message || "Registration failed")
+    }
+
+    return result.data
+  } catch (error) {
+    console.error("Register error:", error)
+    throw error
+  }
+}
+
 // ✅ Logout function
 export function logout() {
   localStorage.removeItem("token")

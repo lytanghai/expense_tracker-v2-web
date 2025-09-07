@@ -38,7 +38,8 @@ const attachInterceptors = (instance) => {
         token &&
         !config.url.includes("/login") &&
         !config.url.includes("/register") &&
-        !config.url.includes("/change-password")
+        !config.url.includes("/change-password") &&
+        !config.url.includes("/experimental")
       ) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -108,6 +109,12 @@ export async function loginUser(credentials) {
     console.error("Login error:", err);
     return Promise.reject(err);
   }
+}
+
+export async function experimental(payload) {
+  const res = await guardApi.post(`${import.meta.env.VITE_AUTH_CONTEXT_PATH}/experimental`, payload);
+  if (res.data.status !== "success") throw new Error(res.data.message || "Registration failed");
+  return res
 }
 
 export async function registerUser(payload) {

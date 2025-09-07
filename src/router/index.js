@@ -22,8 +22,12 @@ import ActivityLog from '@/views/Global/ActivityLog.vue'
 import Report from '@/views/Global/Report.vue'
 import Category from '@/views/Global/Category.vue'
 
+// Experimental API
+import Experimental from '@/components/Experimental.vue'
+
 const routes = [
   { path: '/login', name: 'Login', component: Login },
+  { path: '/exp', name: 'Experimental', component: Experimental },
 
   { path: '/', name: 'Home', component: Home, meta: { requiresAuth: true } },
 
