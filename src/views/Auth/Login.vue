@@ -2,9 +2,7 @@
     <div class="flex h-screen">
         <!-- Left: video -->
         <div class="w-1/2 hidden md:flex items-center justify-center bg-black">
-            <video autoplay loop muted class="h-full w-full object-cover">
-                <!-- <source src="https://i.imgur.com/vlFfu6t.mp4" type="video/mp4" /> -->
-            </video>
+            <video autoplay loop muted class="h-full w-full object-cover"></video>
         </div>
 
         <!-- Right: login / signup form -->
@@ -43,19 +41,22 @@
                         {{ isRegister ? 'Login' : 'Register' }}
                     </a>
                 </p>
+
+                <!-- Hidden Wakeup Button -->
+                <button type="button" @click="wakeUpServers" style="display: none;"  ref="wakeButton"></button>
             </form>
         </div>
     </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { loginUser, registerUser } from '@/services/auth.js' // use auth.js functions
+import { loginUser, registerUser } from '@/services/auth.js'
+import axios from 'axios'
 
 const router = useRouter()
 
-// Toggle between login and register
 const isRegister = ref(false)
 const form = reactive({ username: '', email: '', password: '' })
 
@@ -80,8 +81,6 @@ const handleLogin = () => {
     })
 }
 
-
-// ✅ Register handler
 const handleRegister = async () => {
     try {
         const data = await registerUser({ username: form.username, email: form.email, password: form.password })
@@ -92,4 +91,22 @@ const handleRegister = async () => {
         alert(err.message || 'Registration failed')
     }
 }
+
+// ✅ Wake up both servers
+const wakeUpServers = async () => {
+    try {
+        const guard = axios.get('https://your-guard-server.onrender.com/wakeup')
+        const expenditure = axios.get('https://your-expenditure-server.onrender.com/wakeup')
+        await Promise.all([guard, expenditure])
+        console.log('Both servers are awake!')
+    } catch (err) {
+        console.error('Failed to wake servers', err)
+    }
+}
+
+// Optional: call automatically on page load
+onMounted(() => {
+    // Uncomment if you want to wake servers automatically
+    wakeUpServers()
+})
 </script>
