@@ -44,7 +44,7 @@
 
 
       <!-- Desktop Table -->
-      <div class="hidden md:block bg-white shadow-md rounded-lg overflow-hidden">
+      <div class="hidden md:block bg-white shadow-md rounded-lg overflow-auto max-h-[550px]">
         <table class="min-w-full border-collapse">
           <thead class="bg-gray-200 text-gray-700">
             <tr>

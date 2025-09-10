@@ -16,7 +16,11 @@ import NotificationIncome from '@/views/Income/Notification.vue'
 import Budget from '@/views/Budget/Budget.vue'
 import NotificationBudget from '@/views/Budget/Notification.vue'
 
-import Invest from '@/views/Investment/Invest.vue'
+import Invest from '@/views/Investment/EconomicEvent.vue'
+import UsdcToUsdCalculator from '@/views/Investment/UsdcToUsdCalculator.vue'
+import TradingStrategy from '@/views/Investment/TradingStrategy.vue'
+import EMA_RSI_Trend from '@/views/Investment/strategy/EMA_RSI_Trend.vue'
+import BreakoutScalper from '@/views/Investment/strategy/BreakoutScalper.vue'
 
 import ActivityLog from '@/views/Global/ActivityLog.vue'
 import Report from '@/views/Global/Report.vue'
@@ -42,7 +46,11 @@ const routes = [
   { path: '/budget', component: Budget, meta: { requiresAuth: true } },
   { path: '/budget/notification', component: NotificationBudget, meta: { requiresAuth: true } },
 
-  { path: '/investment', component: Invest, meta: { requiresAuth: true } },
+  { path: '/economic-event', component: Invest, meta: { requiresAuth: true } },
+  { path: '/usdc-calculator', component: UsdcToUsdCalculator, meta: { requiresAuth: true } },
+  { path: '/trading-strategy', component: TradingStrategy, meta: { requiresAuth: true } },
+  { path: '/strategy/ema-rsi', component: EMA_RSI_Trend, meta: { requiresAuth: true } },
+  { path: '/strategy/breakout-scalper', component: BreakoutScalper, meta: { requiresAuth: true } },
 
   { path: '/global/activity-log', component: ActivityLog, meta: { requiresAuth: true } },
   { path: '/global/report', component: Report, meta: { requiresAuth: true } },

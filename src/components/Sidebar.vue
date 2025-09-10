@@ -128,7 +128,6 @@ const menus = [
       {
         label: 'Setting',
         subItems: [
-          // { label: '1️⃣ Category', path: '/income/category' },
           { label: '1️⃣ Notification', path: '/income/notification' }
         ]
       }
@@ -149,12 +148,16 @@ const menus = [
       }
     ]
   },
-  // {
-  //   name: 'investment',
-  //   label: 'Investment Tracking',
-  //   color: 'bg-sky-100 text-teal-800',
-  //   items: [{ label: '✨ Invest', path: '/investment' }]
-  // },
+  {
+    name: 'investment',
+    label: 'Investment Tracking',
+    color: 'bg-sky-100 text-teal-800',
+    items: [
+      { label: '🔥 Economic Event', path: '/economic-event' },
+      { label: '🔥 Signal', path: '/trading-strategy' },
+      { label: '✨ USD Calculator', path: '/usdc-calculator' },
+    ]
+  },
   {
     name: 'global',
     label: 'Global',
@@ -214,6 +217,7 @@ onBeforeUnmount(() => window.removeEventListener('resize', checkMobile))
 .slide-leave-active {
   transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
+
 .slide-enter-from,
 .slide-leave-to {
   transform: translateX(-100%);

@@ -15,7 +15,6 @@
       <!-- Filter Section -->
       <div
         class="bg-white p-4 rounded-lg shadow-md mb-4 flex flex-col sm:flex-row sm:items-end sm:space-x-4 space-y-2 sm:space-y-0">
-
         <!-- Inputs -->
         <div class="flex-1 flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:space-x-2">
           <div class="flex-1">
@@ -46,9 +45,8 @@
 
       </div>
 
-
       <!-- Desktop Table -->
-      <div class="hidden md:block bg-white shadow-md rounded-lg overflow-hidden">
+      <div class="hidden md:block bg-white shadow-md rounded-lg overflow-auto max-h-[550px]">
         <table class="min-w-full border-collapse">
           <thead class="bg-gray-200 text-gray-700">
             <tr>
