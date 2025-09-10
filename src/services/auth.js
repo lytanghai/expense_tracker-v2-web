@@ -1,5 +1,5 @@
 // services/auth.js
-import api, { AUTH_URL } from "@/services/api.js"
+import api, { AUTH_URL, EXPENSE_URL } from "@/services/api.js"
 import router from "@/router"
 
 // ✅ Login function
@@ -62,4 +62,25 @@ export function logout() {
   localStorage.removeItem("token")
   localStorage.removeItem("username")
   router.push("/login")
+}
+
+// ✅ New: Wake-up both Render servers
+import axios from "axios"
+
+export const wakeUpServers = async () => {
+  try {
+    console.log("Calling Guard server:", `${AUTH_URL}/wakeup`)
+    console.log("Calling Expenditure server:", `${EXPENSE_URL}/public/wakeup`)
+
+    await Promise.all([
+      axios.get(`${AUTH_URL}/wakeup`),
+      axios.get(`${EXPENSE_URL}/public/wakeup`)
+    ])
+
+    console.log("Both servers are awake!")
+    return { guard: true, expenditure: true }
+  } catch (error) {
+    console.error("Failed to wake servers", error)
+    throw error
+  }
 }
