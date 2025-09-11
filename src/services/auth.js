@@ -9,6 +9,7 @@ export async function loginUser(credentials) {
     const result = response.data
 
     if (result.status !== "success") {
+      // Throw an Error with the server-provided message or default
       throw new Error(result.message || "Invalid login")
     }
 
@@ -19,10 +20,15 @@ export async function loginUser(credentials) {
 
     return result.data
   } catch (error) {
-    console.error("Login error:", error)
-    throw error
+    // If the error is an Axios error, include server response message
+    if (error.response?.data?.message) {
+      throw new Error(`Login failed: ${error.response.data.message}`)
+    } else {
+      throw new Error(`Login error: ${error.message}`)
+    }
   }
 }
+
 
 // ✅ Register function
 export async function registerUser(payload) {
