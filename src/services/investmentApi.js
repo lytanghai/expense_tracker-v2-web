@@ -52,5 +52,21 @@ export async function fetchBreakoutScalper(params = {}) {
     console.error("Error fetching EMA-RSI analysis:", err);
     throw err;
   }
+}
 
+/**
+ * Fetch live gold price (XAU)
+ * @returns {Promise<Object>} { asset_name, price, symbol, updated_text }
+ */
+export async function fetchGoldPrice() {
+  try {
+    const res = await api.get("/forex/fetch/price"); // api.js already adds base URL
+    if (res.data.status !== "success") {
+      throw new Error(res.data.message || "Failed to fetch gold price");
+    }
+    return res.data.data; // { asset_name, price, symbol, updated_text }
+  } catch (err) {
+    console.error("Error fetching gold price:", err);
+    throw err;
+  }
 }

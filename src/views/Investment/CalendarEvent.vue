@@ -71,6 +71,8 @@
             </div>
 
             <div class="flex flex-wrap gap-2 items-center">
+              <span class="text-sm text-gray-600">Forecast: {{ event.forecast || "-" }}</span>
+              <span class="text-sm text-gray-600">Previous: {{ event.previous || "-" }}</span>
               <span
                 class="px-2 py-1 rounded-full text-sm font-medium"
                 :class="{
@@ -81,9 +83,6 @@
               >
                 {{ event.impact === 'High' ? " 🔥 High 🔥 ": event.impact }}
               </span>
-              <span class="text-sm text-gray-600">Forecast: {{ event.forecast || "-" }}</span>
-              <span class="text-sm text-gray-600">Previous: {{ event.previous || "-" }}</span>
-              <span class="text-sm text-gray-600">Actual: {{ event.actual || "-" }}</span>
             </div>
           </li>
         </ul>

@@ -21,7 +21,6 @@ import UsdcToUsdCalculator from '@/views/Investment/UsdcToUsdCalculator.vue'
 import TradingStrategy from '@/views/Investment/TradingStrategy.vue'
 import EMA_RSI_Trend from '@/views/Investment/strategy/EMA_RSI_Trend.vue'
 import BreakoutScalper from '@/views/Investment/strategy/BreakoutScalper.vue'
-import GoldLive from '@/views/Investment/GoldLive.vue'
 
 import ActivityLog from '@/views/Global/ActivityLog.vue'
 import Report from '@/views/Global/Report.vue'
@@ -52,7 +51,6 @@ const routes = [
   { path: '/trading-strategy', component: TradingStrategy, meta: { requiresAuth: true } },
   { path: '/strategy/ema-rsi', component: EMA_RSI_Trend, meta: { requiresAuth: true } },
   { path: '/strategy/breakout-scalper', component: BreakoutScalper, meta: { requiresAuth: true } },
-  { path: '/live', component: GoldLive, meta: { requiresAuth: true } },
 
   { path: '/global/activity-log', component: ActivityLog, meta: { requiresAuth: true } },
   { path: '/global/report', component: Report, meta: { requiresAuth: true } },
