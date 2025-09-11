@@ -12,8 +12,8 @@ const price = ref(0);
 let ws = null;
 
 onMounted(() => {
-  const apiKey = "YOUR_KEY";
-  ws = new WebSocket(`wss://ws.twelvedata.com/v1/quotes/price?apikey=fa4558aef2b5486ca4894bd76dbea032`);
+  const apiKey = "fa4558aef2b5486ca4894bd76dbea032";
+  ws = new WebSocket(`wss://ws.twelvedata.com/v1/quotes/price?apikey=${apiKey}`);
 
   ws.onopen = () => {
     console.log("WebSocket connected");
