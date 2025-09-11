@@ -1,0 +1,96 @@
+{
+	"url":"https://pro-api.coinmarketcap.com/v3/cryptocurrency/quotes/latest?=symbol=XAUt&?convert=USD",
+	"method":"GET",
+	"headers": {
+		"X-CMC_PRO_API_KEY":"7e9ed58c-b1b8-4eaa-81ed-c36781c2cd68"
+	},
+	"payload":{
+		
+	}
+}
+
+res:
+{
+	"data": [
+		{
+			"tags": [
+				{
+					"slug": "ethereum-ecosystem",
+					"name": "Ethereum Ecosystem",
+					"category": "PLATFORM"
+				},
+				{
+					"slug": "tokenized-gold",
+					"name": "Tokenized Gold",
+					"category": "CATEGORY"
+				},
+				{
+					"slug": "real-world-assets-protocols",
+					"name": "Real World Assets Protocols",
+					"category": "CATEGORY"
+				},
+				{
+					"slug": "tokenized-assets",
+					"name": "Tokenized Assets",
+					"category": "CATEGORY"
+				},
+				{
+					"slug": "tokenized-commodities",
+					"name": "Tokenized commodities",
+					"category": "CATEGORY"
+				}
+			],
+			"id": 5176,
+			"name": "Tether Gold",
+			"symbol": "XAUt",
+			"slug": "tether-gold",
+			"is_active": 1,
+			"infinite_supply": false,
+			"is_fiat": 0,
+			"circulating_supply": 246524,
+			"total_supply": 246524,
+			"max_supply": null,
+			"date_added": "2020-02-07T00:00:00.000Z",
+			"num_market_pairs": 196,
+			"cmc_rank": 87,
+			"last_updated": "2025-09-11T14:34:00.000Z",
+			"tvl_ratio": 0.65287211,
+			"platform": {
+				"id": 1027,
+				"slug": "ethereum",
+				"name": "Ethereum",
+				"symbol": "ETH",
+				"token_address": "0x68749665FF8D2d112Fa859AA293F07A622782F38"
+			},
+			"self_reported_circulating_supply": 48450,
+			"self_reported_market_cap": 176058972.2198675361,
+			"quote": [
+				{
+					"id": 2781,
+					"symbol": "USD",
+					"price": 3633.828115993138,
+					"volume_24h": 58365814.05618761,
+					"volume_change_24h": -34.9538,
+					"percent_change_1h": 0.20084169,
+					"percent_change_24h": -0.52450158,
+					"percent_change_7d": 2.53104013,
+					"percent_change_30d": 8.88130562,
+					"percent_change_60d": 8.55140371,
+					"percent_change_90d": 5.69357255,
+					"market_cap": 895825842.47,
+					"market_cap_dominance": 0.0227,
+					"fully_diluted_market_cap": 895825842.47,
+					"tvl": 1372130670,
+					"last_updated": "2025-09-11T14:34:02.000Z"
+				}
+			]
+		}
+	],
+	"status": {
+		"timestamp": "2025-09-11T14:35:26.618Z",
+		"error_code": "0",
+		"error_message": "",
+		"elapsed": 8,
+		"credit_count": 1
+	}
+}
