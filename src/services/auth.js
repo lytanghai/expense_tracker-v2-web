@@ -69,12 +69,12 @@ import axios from "axios"
 
 export const wakeUpServers = async () => {
   try {
-    console.log("Calling Guard server:", `${AUTH_URL}/wakeup`)
-    console.log("Calling Expenditure server:", `${EXPENSE_URL}/public/wakeup`)
+    console.log("Calling Guard server:", `https://expense-tracker-v2-etap.onrender.com/guard/public/auth/wakeup`)
+    console.log("Calling Expenditure server:", `https://expenditure-diary-server.onrender.com/expenditure-diary/expense_tracking/public/wakeup`)
 
     await Promise.all([
-      axios.get(`${AUTH_URL}/wakeup`),
-      axios.get(`${EXPENSE_URL}/public/wakeup`)
+      axios.get(`https://expense-tracker-v2-etap.onrender.com/guard/public/auth/wakeup`),
+      axios.get(`https://expenditure-diary-server.onrender.com/expenditure-diary/expense_tracking/public/wakeup`)
     ])
 
     console.log("Both servers are awake!")
