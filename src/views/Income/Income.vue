@@ -90,10 +90,12 @@
             <div class="flex flex-col text-sm">
               <span class="font-semibold">{{ income.category }}</span>
               <span>{{ formatPrice(income.pnl, income.currency) }}</span>
-              <td>{{ income.pnl_type === '+' ? '📈' : '📉' }}</td>
+              <span>{{ income.pnl_type === '+' ? '📈' : '📉' }}</span> <!-- ✅ fixed -->
               <span v-if="income.note">{{ truncateNote(income.note) }}</span>
               <button v-if="income.note && income.note.length > 30" @click="viewNote(income.note)"
-                class="text-blue-500 underline text-xs mt-1">View</button>
+                class="text-blue-500 underline text-xs mt-1">
+                View
+              </button>
             </div>
             <div class="flex flex-col space-y-1 ml-2">
               <button @click="editIncome(income)"
@@ -183,7 +185,7 @@ import { ref, onMounted } from 'vue'
 import Sidebar from '@/components/Sidebar.vue'
 import { formatPrice } from '@/services/numeric'
 import { useLoadingStore } from '@/stores/loading'
-import { fetchIncomes, createIncome, updateIncome, deleteIncomeApi,filterIncomes } from '@/services/incomeApi'
+import { fetchIncomes, createIncome, updateIncome, deleteIncomeApi, filterIncomes } from '@/services/incomeApi'
 
 // Notification Alert
 import { useNotification } from '@/stores/notification'

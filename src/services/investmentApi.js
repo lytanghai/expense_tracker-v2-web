@@ -55,18 +55,28 @@ export async function fetchBreakoutScalper(params = {}) {
 }
 
 /**
- * Fetch live gold price (XAU)
- * @returns {Promise<Object>} { asset_name, price, symbol, updated_text }
+ * Fetch live gold (or other asset) price
+ * @param {string} fromSymbol - e.g. "XAUT"
+ * @param {string} toSymbol - e.g. "USD"
+ * @returns {Promise<Object>} { name, from_symbol, to_symbol, price, last_updated }
  */
-export async function fetchGoldPrice() {
+export async function fetchCmcPrice(fromSymbol, toSymbol) {
   try {
-    const res = await api.get("/forex/fetch/price"); // api.js already adds base URL
+    const res = await api.get(`/forex/fetch/cmc-price?fromSymbol=${fromSymbol}&toSymbol=${toSymbol}`);
     if (res.data.status !== "success") {
-      throw new Error(res.data.message || "Failed to fetch gold price");
+      throw new Error(res.data.message || "Failed to fetch price");
     }
-    return res.data.data; // { asset_name, price, symbol, updated_text }
+
+    const d = res.data.data;
+    return {
+      name: d.name,
+      from_symbol: d.from_symbol,
+      to_symbol: d.quote.to_symbol,
+      price: d.quote.price,
+      last_updated: d.quote.last_updated
+    };
   } catch (err) {
-    console.error("Error fetching gold price:", err);
+    console.error("Error fetching price:", err);
     throw err;
   }
 }
