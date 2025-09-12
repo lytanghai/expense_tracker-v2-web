@@ -13,7 +13,7 @@
           <option value="">-- Select Type --</option>
           <option value="Expense">Expense</option>
           <option value="Income">Income</option>
-          <option value="Investment">Investment</option>
+          <!-- <option value="Investment">Investment</option> -->
         </select>
       </div>
 

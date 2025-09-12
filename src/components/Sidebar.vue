@@ -156,6 +156,7 @@ const menus = [
       { label: '🔥 Economic Event', path: '/economic-event' },
       { label: '🔥 Signal', path: '/trading-strategy' },
       { label: '✨ USD Calculator', path: '/usdc-calculator' },
+      { label: '✨ Alert', path: '/alert' },
     ]
   },
   {

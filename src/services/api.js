@@ -156,6 +156,19 @@ export async function createExpense(payload) {
   }
 }
 
+// 🔹 NEW: Batch create API
+export async function createBatchExpense(expenses) {
+  try {
+    const res = await api.post("/expense_tracking/batch/create", {
+      expense_add_requests: expenses // snake_case root property
+    });
+    return res.data;
+  } catch (err) {
+    console.error("Error creating batch expenses:", err);
+    throw err;
+  }
+}
+
 export async function deleteExpense(id) {
   const res = await api.post("/expense_tracking/delete", { id })
   return res.data

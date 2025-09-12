@@ -99,14 +99,19 @@ const handleRegister = async () => {
   }
 }
 
+let serversCalled = false
+
 onMounted(async () => {
+  if (serversCalled) return
+  serversCalled = true
+
   try {
     await wakeUpServers()
     serversReady.value = true
     console.log("Servers are ready")
   } catch (err) {
     console.log("Could not wake servers, still allowing login")
-    serversReady.value = true // allow login anyway
+    serversReady.value = true
   }
 })
 </script>

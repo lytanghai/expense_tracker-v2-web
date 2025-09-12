@@ -69,7 +69,7 @@ async function loadPrice() {
     priceData.value = data;
 
     // Add to history
-    const date = new Date(data.last_updated).toISOString().slice(0, 16); // minute precision
+    const date = new Date(data.last_updated).toISOString().slice(0, 19).replace('T', " "); // minute precision
     if (!historyList.value.find(item => item.date === date)) {
       historyList.value.push({ date, price: data.price });
     }

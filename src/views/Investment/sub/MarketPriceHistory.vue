@@ -48,6 +48,7 @@ const props = defineProps({
   },
 });
 
+
 // Sort history descending by date
 const sortedHistory = computed(() =>
   [...props.history].sort((a, b) => new Date(b.date) - new Date(a.date))
