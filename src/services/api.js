@@ -181,4 +181,32 @@ export async function filterExpenses({ category = "", item = "", currency = "", 
   }
 }
 
+
+// ================== Setting APIs ==================
+/**
+ * Fetch all settings
+ * GET /expense_tracking/setting/list
+ * @returns {Promise<Object>} data.object_map
+ */
+export async function fetchSettings() {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await api.get("/expense_tracking/setting/list", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (res.data?.status === "success") {
+      return res.data.data.object_map || {};
+    } else {
+      console.warn("API returned error:", res.data?.message);
+      return {};
+    }
+  } catch (err) {
+    console.error("Failed to fetch settings:", err);
+    throw err;
+  }
+}
+
 export default api;

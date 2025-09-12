@@ -81,7 +81,7 @@ async function loadPrice() {
 
 onMounted(() => {
   loadPrice();
-  intervalId = setInterval(loadPrice, 60000); // poll every minute
+  intervalId = setInterval(loadPrice, 60000 * 5); // poll every 5 minute
 });
 
 onBeforeUnmount(() => {
