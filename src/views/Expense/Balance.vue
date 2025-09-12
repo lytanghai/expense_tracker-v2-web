@@ -55,6 +55,7 @@
 import { ref, computed, onMounted } from "vue";
 import Sidebar from "@/components/Sidebar.vue";
 import api from "@/services/api";
+import { fetchSettings } from "@/services/api.js";
 
 const loading = ref(true);
 const apiData = ref({ object_map: {} });
@@ -82,17 +83,16 @@ const toSnakeCase = (str) => {
 
 const saveUpdate = async (key) => {
   try {
-    const payloadKey = toSnakeCase(key); // e.g. "monthlyBalanceUpt" -> "monthly_balance_upt"
+    const payloadKey = toSnakeCase(key); 
     const payload = { [payloadKey]: editValue.value };
 
-    console.log("Payload to send:", payload); // 🔹 debug
+    console.log("Payload to send:", payload);
 
     const token = localStorage.getItem("token");
     const res = await api.post("/expense_tracking/setting/update", payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
-    console.log("Response:", res.data);
+    
     apiData.value.object_map[key] = editValue.value;
     editKey.value = null;
     editValue.value = "";
@@ -101,29 +101,20 @@ const saveUpdate = async (key) => {
   }
 };
 
-// Fetch settings
-const fetchSettings = async () => {
-  loading.value = true;
+// Fetch settings safely inside onMounted
+onMounted(async () => {
   try {
-    const token = localStorage.getItem("token");
-    const res = await api.get("/expense_tracking/setting/list", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    if (res.data?.status === "success") {
-      apiData.value = res.data.data;
-    } else {
-      console.warn("API returned error:", res.data?.message);
-    }
+    loading.value = true;
+    const settings = await fetchSettings();
+    apiData.value.object_map = settings;
   } catch (err) {
     console.error("Failed to fetch settings:", err);
   } finally {
     loading.value = false;
   }
-};
-
-onMounted(fetchSettings);
+});
 </script>
+
 
 
 <style scoped>

@@ -1,11 +1,29 @@
 <template>
   <div class="flex h-screen bg-gray-100">
     <Sidebar />
+
     <main class="flex-1 p-4 md:p-6 relative">
       <!-- Header -->
       <div
         class="sticky top-0 bg-gray-100 z-30 flex flex-col md:flex-row md:items-center md:justify-between px-4 pt-16 sm:pt-4 pb-4 shadow-sm">
         <h1 class="text-xl md:text-2xl font-bold mb-2 md:mb-0">Expense Dashboard</h1>
+
+        <!-- Current vs Available -->
+        <div class="flex flex-col md:flex-row items-center justify-between bg-white shadow-md rounded-lg p-4 mb-4">
+          <div class="flex flex-col md:flex-row md:space-x-6 items-center">
+            <div class="text-gray-700 text-sm md:text-base font-medium">
+              Current Spending:
+              <span class="font-bold text-red-600">{{ formatPrice(currentSpending, 'USD') }} 💸</span>
+            </div>
+            <div class="text-gray-700 text-sm md:text-base font-medium">📍</div>
+            <div class="text-gray-700 text-sm md:text-base font-medium">
+              Available:
+              <span class="font-bold text-green-600">{{ formatPrice(available, 'USD') }} 💰</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Create Button -->
         <button @click="openCreateModal"
           class="w-full md:w-auto px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition text-center">
           + Create Expense
@@ -15,7 +33,6 @@
       <!-- Filter Section -->
       <div
         class="bg-white p-4 rounded-lg shadow-md mb-4 flex flex-col sm:flex-row sm:items-end sm:space-x-4 space-y-2 sm:space-y-0">
-        <!-- Inputs -->
         <div class="flex-1 flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:space-x-2">
           <div class="flex-1">
             <label class="block text-sm font-medium mb-1">Category</label>
@@ -34,15 +51,12 @@
             </select>
           </div>
         </div>
-
-        <!-- Filter Button -->
         <div class="flex justify-end sm:mt-0 mt-2">
           <button @click="applyFilters"
             class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 w-full sm:w-auto">
             Filter
           </button>
         </div>
-
       </div>
 
       <!-- Desktop Table -->
@@ -87,17 +101,12 @@
         </table>
       </div>
 
-      <!-- Mobile List Grouped by Date -->
+      <!-- Mobile Grouped List -->
       <div class="md:hidden space-y-4 px-2">
         <template v-for="(group, date) in groupedExpenses" :key="date">
-          <!-- Date Header -->
           <div class="text-gray-700 font-semibold text-sm mt-2 mb-1">{{ date }}</div>
-
-          <!-- Expense List -->
           <div v-for="expense in group" :key="expense.id"
             class="bg-white rounded-xl shadow-sm p-3 flex flex-col space-y-1">
-
-            <!-- Top Row: Item + Category + PNL Type -->
             <div class="flex justify-between items-center">
               <span class="font-semibold text-sm">{{ expense.item }}</span>
               <span class="text-xs font-medium px-2 py-0.5 rounded-full"
@@ -105,39 +114,35 @@
                 {{ expense.category }}
               </span>
             </div>
-
-            <!-- Middle Row: Price & Converted -->
             <div class="flex justify-between text-xs text-gray-700">
               <span>{{ formatPrice(expense.price, expense.currency) }}</span>
               <span>{{ formatPrice(expense.converted_price, expense.converted_currency) }}</span>
             </div>
-
-            <!-- Note -->
             <div v-if="expense.note" class="text-xs text-gray-600 flex justify-between items-center">
               <span>{{ truncate(expense.note) }}</span>
               <button v-if="expense.note.length > 30" @click="viewNote(expense.note)"
                 class="text-blue-500 underline text-xs ml-2 hover:text-blue-700">View</button>
             </div>
-
-            <!-- Action Buttons -->
             <div class="flex justify-end space-x-2 mt-1">
               <button @click="editExpense(expense)"
                 class="px-3 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600">Edit</button>
               <button @click="deleteExpense(expense)"
                 class="px-3 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600">Delete</button>
             </div>
-
           </div>
         </template>
       </div>
 
       <!-- Pagination -->
       <div class="flex justify-between items-center mt-4">
-        <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" :disabled="page === 0"
-          @click="previousPage">Prev</button>
+        <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" :disabled="page === 0" @click="previousPage">
+          Prev
+        </button>
         <span>Page {{ page + 1 }} of {{ totalPages }}</span>
         <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" :disabled="page + 1 >= totalPages"
-          @click="nextPage">Next</button>
+          @click="nextPage">
+          Next
+        </button>
       </div>
 
       <!-- Create / Edit Expense Modal -->
@@ -172,12 +177,14 @@
             <div class="flex justify-end space-x-2 mt-2">
               <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
                 @click="closeCreateModal">Cancel</button>
-              <button type="submit" class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">{{ editingExpense
-                ? 'Save' : 'Create' }}</button>
+              <button type="submit"
+                class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">{{ editingExpense ? 'Save' : 'Create'
+                }}</button>
             </div>
           </form>
         </div>
       </div>
+
       <!-- View Note Modal -->
       <div v-if="showNoteModal"
         class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
@@ -198,14 +205,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import Sidebar from '@/components/Sidebar.vue'
-import { fetchExpenses, createExpense as apiCreateExpense, deleteExpense as apiDeleteExpense, updateExpense, filterExpenses } from '@/services/api.js'
+import { fetchSettings, fetchExpenses, createExpense as apiCreateExpense, deleteExpense as apiDeleteExpense, updateExpense, filterExpenses } from '@/services/api.js'
 import { formatPrice, truncate } from '@/services/numeric'
 import { useLoadingStore } from '@/stores/loading'
 import { parse, format } from 'date-fns'
 
 // Notification Alert
 import { useNotification } from '@/stores/notification'
-const { notify } = useNotification();
+const { notify } = useNotification()
 
 // Confirmation Modal
 import { useConfirmStore } from '@/stores/confirm'
@@ -220,32 +227,23 @@ const totalPages = ref(1)
 const showNoteModal = ref(false)
 const selectedNote = ref("")
 
-const viewNote = (note) => {
-  selectedNote.value = note
-  showNoteModal.value = true
-}
+const currentSpending = ref(0)
+const available = ref(0)
 
-// Create/Edit Modal
 const showCreateModal = ref(false)
 const editingExpense = ref(false)
 const newExpense = ref({ id: null, item: '', category: '', price: 0, currency: 'USD', note: '' })
 
+// Load expenses
 const loadExpenses = async (currentFilters = null) => {
   try {
     loadingStore.show()
     let response
-
     if (currentFilters) {
-      response = await filterExpenses({
-        ...currentFilters,
-        page: page.value,
-        size
-      })
+      response = await filterExpenses({ ...currentFilters, page: page.value, size })
     } else {
-      // Load all expenses
       response = await fetchExpenses({ page: page.value, size })
     }
-
     expenses.value = response.content
     totalPages.value = response.total_pages
   } catch (err) {
@@ -255,46 +253,35 @@ const loadExpenses = async (currentFilters = null) => {
   }
 }
 
+// Refresh both settings + expenses
+const refreshExpenses = async () => {
+  try {
+    const settings = await fetchSettings()
+    currentSpending.value = settings.metadata.current_spending || 0
+    available.value = settings.metadata.available_spending || 0
+    await loadExpenses()
+  } catch (err) {
+    console.error("Failed to refresh:", err)
+  }
+}
+
 const nextPage = async () => {
   if (page.value + 1 < totalPages.value) {
     page.value++
-    await loadExpenses(filters.value.category || filters.value.item || filters.value.currency ? {
-      category: filters.value.category,
-      item: filters.value.item,
-      currency: filters.value.currency
-    } : null)
+    await loadExpenses(filters.value)
   }
 }
-
 const previousPage = async () => {
   if (page.value > 0) {
     page.value--
-    await loadExpenses(filters.value.category || filters.value.item || filters.value.currency ? {
-      category: filters.value.category,
-      item: filters.value.item,
-      currency: filters.value.currency
-    } : null)
+    await loadExpenses(filters.value)
   }
 }
 
-const filters = ref({
-  category: '',
-  item: '',
-  currency: ''
-})
-
+const filters = ref({ category: '', item: '', currency: '' })
 const applyFilters = async () => {
-  try {
-    page.value = 0 // Reset to first page
-    await loadExpenses({
-      category: filters.value.category,
-      item: filters.value.item,
-      currency: filters.value.currency
-    })
-  } catch (err) {
-    console.error('Filter error:', err)
-    notify("error", "Filter Failed", "Could not load filtered expenses.")
-  }
+  page.value = 0
+  await loadExpenses(filters.value)
 }
 
 const openCreateModal = () => {
@@ -302,12 +289,10 @@ const openCreateModal = () => {
   newExpense.value = { id: null, item: '', category: '', price: 0, currency: 'USD', note: '' }
   showCreateModal.value = true
 }
-
 const closeCreateModal = () => { showCreateModal.value = false }
 
 const saveExpense = async () => {
   try {
-    // Use Confirm Modal for edits
     const action = async () => {
       if (editingExpense.value) {
         await updateExpense(newExpense.value.id, { ...newExpense.value })
@@ -316,15 +301,14 @@ const saveExpense = async () => {
       }
       notify("success", "Record Saved!", "Your record has been saved successfully.")
       closeCreateModal()
-      loadExpenses()
+      await refreshExpenses()
     }
 
     if (editingExpense.value) {
-      confirmStore.open(`Are you sure you want to save changes to "${newExpense.value.item}"?`, action)
+      confirmStore.open(`Save changes to "${newExpense.value.item}"?`, action)
     } else {
       await action()
     }
-
   } catch (err) {
     console.error(err)
     notify("error", "Save Failed", "Something went wrong while saving the expense.")
@@ -332,11 +316,11 @@ const saveExpense = async () => {
 }
 
 const deleteExpense = async (expense) => {
-  confirmStore.open(`Are you sure to delete "${expense.item}"?`, async () => {
+  confirmStore.open(`Delete "${expense.item}"?`, async () => {
     try {
       await apiDeleteExpense(expense.id)
       notify("success", "Deleted Successfully!", "Your record has been removed.")
-      loadExpenses()
+      await refreshExpenses()
     } catch (err) {
       console.error(err)
       notify("error", "Delete Failed!", "Something went wrong while deleting.")
@@ -347,11 +331,14 @@ const deleteExpense = async (expense) => {
 const editExpense = (expense) => {
   editingExpense.value = true
   newExpense.value = { ...expense }
-
   showCreateModal.value = true
 }
 
-// Group by formatted date
+const viewNote = (note) => {
+  selectedNote.value = note
+  showNoteModal.value = true
+}
+
 const groupedExpenses = computed(() => {
   const groups = {}
   expenses.value.forEach(exp => {
@@ -363,5 +350,7 @@ const groupedExpenses = computed(() => {
   return groups
 })
 
-onMounted(() => { loadExpenses() })
+onMounted(async () => {
+  await refreshExpenses()
+})
 </script>

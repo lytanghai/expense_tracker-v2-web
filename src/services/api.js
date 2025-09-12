@@ -131,6 +131,7 @@ export async function changePassword(payload) {
 export function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("username");
+  localStorage.removeItem("expense_metadata")
   router.push("/login");
 }
 
@@ -198,6 +199,8 @@ export async function fetchSettings() {
     });
 
     if (res.data?.status === "success") {
+      console.log(res.data.data.object_map.metadata)
+      localStorage.setItem("expense_metadata", res.data.data.object_map.metadata)
       return res.data.data.object_map || {};
     } else {
       console.warn("API returned error:", res.data?.message);
