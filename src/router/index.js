@@ -17,7 +17,7 @@ import Budget from '@/views/Budget/Budget.vue'
 import NotificationBudget from '@/views/Budget/Notification.vue'
 
 import Invest from '@/views/Investment/EconomicEvent.vue'
-import UsdcToUsdCalculator from '@/views/Investment/UsdcToUsdCalculator.vue'
+import UsdcToUsdCalculator from '@/views/Investment/Calculator.vue'
 import TradingStrategy from '@/views/Investment/TradingStrategy.vue'
 import EMA_RSI_Trend from '@/views/Investment/strategy/EMA_RSI_Trend.vue'
 import BreakoutScalper from '@/views/Investment/strategy/BreakoutScalper.vue'

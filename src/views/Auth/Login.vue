@@ -1,16 +1,47 @@
+<style scoped>
+@keyframes floatUp {
+  0% {
+    transform: translateY(100px);
+    /* start at initial bottom */
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-750px);
+    /* fly up */
+    opacity: 0;
+  }
+}
+
+.floating-coin {
+  position: absolute;
+  animation-name: floatUp;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+</style>
 <template>
   <div class="flex h-screen">
-    <!-- Left: video -->
-    <div class="w-1/2 hidden md:flex items-center justify-center bg-black">
-      <video autoplay loop muted class="h-full w-full object-cover"></video>
+
+    <div class="w-1/2 hidden md:flex items-center justify-center relative overflow-hidden 
+            bg-gradient-to-br from-purple-700 via-pink-500 to-yellow-400">
+
+      <img v-for="coin in coins" :key="coin.id" :src="`/src/assets/img/block${coin.img}.png`"
+        class="absolute w-12 h-12 floating-coin" :style="{
+          left: coin.left + '%',
+          bottom: coin.bottom + 'px',
+          animationDuration: coin.duration + 's',
+          animationDelay: coin.delay + 's'
+        }" />
     </div>
 
     <!-- Right: login / signup form -->
     <div class="w-full md:w-1/2 flex flex-col justify-center items-center bg-white p-8">
       <h2 class="text-2xl font-bold mb-6">{{ isRegister ? 'Sign Up' : 'Login' }}</h2>
-
-      <!-- Loading indicator -->
-      <p v-if="!serversReady" class="text-gray-500 text-sm mb-4">Waking up servers...</p>
 
       <form @submit.prevent="isRegister ? handleRegister() : handleLogin()" class="w-full max-w-sm">
         <!-- Username -->
@@ -32,9 +63,7 @@
         </div>
 
         <!-- Submit button -->
-        <button type="submit"
-                class="w-full bg-teal-500 text-white py-2 rounded hover:bg-teal-600 disabled:opacity-50"
-                :disabled="!serversReady">
+        <button type="submit" class="w-full bg-teal-500 text-white py-2 rounded hover:bg-teal-600 disabled:opacity-50">
           {{ isRegister ? 'Sign Up' : 'Login' }}
         </button>
 
@@ -61,11 +90,24 @@ import { loginUser, registerUser, wakeUpServers } from '@/services/auth.js'
 
 const router = useRouter()
 
+// Generate random coins
+function randomCoins(count = 10) {
+  return Array.from({ length: count }, (_, i) => ({
+    id: i,
+    left: Math.random() * 90, // horizontal position
+    bottom: Math.random() * 100, // start height
+    duration: 2 + Math.random() * 3, // speed
+    delay: Math.random() * 3, // stagger
+    img: Math.floor(Math.random() * 8) + 1 // pick block1.png to block7.png
+  }))
+}
+
+const coins = reactive(randomCoins(12))
 const isRegister = ref(false)
 const form = reactive({ username: '', email: '', password: '' })
 
 // ✅ New: track if servers are ready
-const serversReady = ref(false)
+// const serversReady = ref(false)
 
 const toggleForm = () => {
   isRegister.value = !isRegister.value

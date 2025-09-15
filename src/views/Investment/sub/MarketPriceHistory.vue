@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white shadow-lg rounded-lg p-4">
-    <h4 class="text-lg font-semibold mb-2">Price History</h4>
+    <h4 class="text-lg font-semibold mb-2">Price History (Gold)</h4>
     <div v-if="history.length === 0" class="text-gray-500 text-sm">No history available.</div>
 
     <div

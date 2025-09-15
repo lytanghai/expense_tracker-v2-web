@@ -13,13 +13,31 @@
           + Create Income
         </button>
       </div>
+
       <!-- Filter Section -->
       <div
         class="bg-white p-4 rounded-lg shadow-md mb-4 flex flex-col sm:flex-row sm:items-end sm:space-x-4 space-y-2 sm:space-y-0">
         <div class="flex-1">
           <label class="block text-sm font-medium mb-1">Category</label>
-          <input v-model="filters.category" type="text" placeholder="Category" class="w-full border p-2 rounded" />
+          <div class="flex flex-col space-y-2">
+            <select v-model="filters.category" class="w-full border p-2 rounded">
+              <option value="">All</option>
+              <option value="Crypto">Crypto</option>
+              <option value="Forex">Forex</option>
+              <option value="Interest Rate">Interest Rate</option>
+              <option value="Airdrop">Airdrop</option>
+              <option value="__custom__">User Input</option>
+            </select>
+            <input
+              v-if="filters.category === '__custom__'"
+              v-model="filters.customCategory"
+              type="text"
+              placeholder="Enter custom category"
+              class="w-full border p-2 rounded"
+            />
+          </div>
         </div>
+
         <div class="flex-1">
           <label class="block text-sm font-medium mb-1">Type</label>
           <select v-model="filters.pnl_type" class="w-full border p-2 rounded">
@@ -28,6 +46,7 @@
             <option value="-">-</option>
           </select>
         </div>
+
         <div class="flex-1">
           <label class="block text-sm font-medium mb-1">Currency</label>
           <select v-model="filters.currency" class="w-full border p-2 rounded">
@@ -36,12 +55,12 @@
             <option value="KHR">KHR</option>
           </select>
         </div>
+
         <div class="flex justify-end sm:mt-0 mt-2">
           <button @click="applyFilters"
             class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Filter</button>
         </div>
       </div>
-
 
       <!-- Desktop Table -->
       <div class="hidden md:block bg-white shadow-md rounded-lg overflow-auto max-h-[550px]">
@@ -90,7 +109,7 @@
             <div class="flex flex-col text-sm">
               <span class="font-semibold">{{ income.category }}</span>
               <span>{{ formatPrice(income.pnl, income.currency) }}</span>
-              <span>{{ income.pnl_type === '+' ? '📈' : '📉' }}</span> <!-- ✅ fixed -->
+              <span>{{ income.pnl_type === '+' ? '📈' : '📉' }}</span>
               <span v-if="income.note">{{ truncateNote(income.note) }}</span>
               <button v-if="income.note && income.note.length > 30" @click="viewNote(income.note)"
                 class="text-blue-500 underline text-xs mt-1">
@@ -124,7 +143,24 @@
           <form @submit.prevent="saveIncome" class="space-y-3">
             <div>
               <label>Category</label>
-              <input v-model="newIncome.category" type="text" required class="w-full border p-2 rounded" />
+              <div class="flex flex-col space-y-2">
+                <select v-model="newIncome.category" class="w-full border p-2 rounded" required>
+                  <option value="">Select Category</option>
+                  <option value="Crypto">Crypto</option>
+                  <option value="Forex">Forex</option>
+                  <option value="Interest Rate">Interest Rate</option>
+                  <option value="Airdrop">Airdrop</option>
+                  <option value="__custom__">Other</option>
+                </select>
+                <input
+                  v-if="newIncome.category === '__custom__'"
+                  v-model="newIncome.customCategory"
+                  type="text"
+                  placeholder="Enter custom category"
+                  class="w-full border p-2 rounded"
+                  required
+                />
+              </div>
             </div>
             <div>
               <label>Amount (PNL)</label>
@@ -204,7 +240,7 @@ const totalPages = ref(1)
 // CRUD Modal
 const showCreateModal = ref(false)
 const editingIncome = ref(false)
-const newIncome = ref({ id: null, pnl: 0, currency: 'USD', category: '', pnl_type: '+', note: '', date: '' })
+const newIncome = ref({ id: null, pnl: 0, currency: 'USD', category: '', customCategory: '', pnl_type: '+', note: '', date: '' })
 
 // Note modal
 const showNoteModal = ref(false)
@@ -221,20 +257,9 @@ const viewNote = (note) => {
 
 const formatDateForInput = (dateString) => {
   if (!dateString) return ""
-
-  // Case 1: already in YYYY-MM-DD
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-    return dateString
-  }
-
-  // Case 2: full ISO or other valid date string
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString
   const d = new Date(dateString)
-  if (!isNaN(d.getTime())) {
-    return d.toISOString().split("T")[0] // → YYYY-MM-DD
-  }
-
-  // Case 3: unknown/invalid format
-  return ""
+  return !isNaN(d.getTime()) ? d.toISOString().split("T")[0] : ""
 }
 
 const loadIncomes = async (currentFilters = null) => {
@@ -254,45 +279,50 @@ const loadIncomes = async (currentFilters = null) => {
     loadingStore.hide()
   }
 }
-// Update pagination
+
 const nextPage = async () => {
   if (page.value + 1 < totalPages.value) {
     page.value++
-    await loadIncomes(filters.value.category || filters.value.pnl_type || filters.value.currency ? { ...filters.value } : null)
+    await loadIncomes(applyCategoryFilter(filters.value))
   }
 }
-
 const previousPage = async () => {
   if (page.value > 0) {
     page.value--
-    await loadIncomes(filters.value.category || filters.value.pnl_type || filters.value.currency ? { ...filters.value } : null)
+    await loadIncomes(applyCategoryFilter(filters.value))
   }
 }
 
 const openCreateModal = () => {
   editingIncome.value = false
-  newIncome.value = { id: null, pnl: 0, currency: 'USD', category: '', pnl_type: '+', note: '', date: '' }
+  newIncome.value = { id: null, pnl: 0, currency: 'USD', category: '', customCategory: '', pnl_type: '+', note: '', date: '' }
   showCreateModal.value = true
 }
 const closeCreateModal = () => { showCreateModal.value = false }
 
+// Normalize category before save
+const normalizeIncomeCategory = (income) => {
+  return {
+    ...income,
+    category: income.category === '__custom__' ? income.customCategory : income.category
+  }
+}
+
 // ---------------- SAVE INCOME ----------------
 const saveIncome = async () => {
   try {
+    const payload = normalizeIncomeCategory(newIncome.value)
     const action = async () => {
       if (editingIncome.value) {
-        await updateIncome(newIncome.value.id, { ...newIncome.value })
+        await updateIncome(payload.id, payload)
       } else {
-        await createIncome(newIncome.value)
+        await createIncome(payload)
       }
-
       notify("success", "Income saved!", "Your record has been saved!");
       closeCreateModal();
       loadIncomes();
     }
-
-    await action();
-
+    await action()
   } catch (err) {
     console.error(err)
     notify("error", "Save Failed!", "Something went wrong while saving the income.")
@@ -304,7 +334,8 @@ const editIncome = (income) => {
   editingIncome.value = true
   newIncome.value = {
     ...income,
-    date: formatDateForInput(income.date) // format for input type="date"
+    customCategory: '',
+    date: formatDateForInput(income.date)
   }
   showCreateModal.value = true
 }
@@ -317,25 +348,35 @@ const deleteIncome = async (income) => {
       notify("success", "Income deleted!", "Your record has been removed.")
       loadIncomes()
     }
-
     confirmStore.open(`Are you sure you want to delete "${income.category}" income?`, action)
-
   } catch (err) {
     console.error(err)
     notify("error", "Delete Failed!", "Something went wrong while deleting the income.")
   }
 }
 
+// Filters
 const filters = ref({
   category: '',
+  customCategory: '',
   pnl_type: '',
   currency: ''
 })
 
+const applyCategoryFilter = (filtersObj) => {
+  return {
+    ...filtersObj,
+    category: filtersObj.category === '__custom__'
+      ? filtersObj.customCategory
+      : filtersObj.category
+  }
+}
+
 const applyFilters = async () => {
   try {
-    page.value = 0 // reset to first page
-    await loadIncomes({ ...filters.value })
+    page.value = 0
+    const applied = applyCategoryFilter(filters.value)
+    await loadIncomes(applied)
   } catch (err) {
     console.error('Filter error:', err)
     notify("error", "Filter Failed", "Could not load filtered incomes.")
