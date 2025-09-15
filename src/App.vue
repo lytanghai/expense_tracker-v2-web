@@ -27,6 +27,12 @@
 import { useLoadingStore } from '@/stores/loading'
 import SuccessAlert from './components/SuccessAlert.vue';
 import ConfirmModal from './components/ConfirmModal.vue';
+import { keepAlive } from './services/keepAlive';
+import { onMounted } from 'vue';
+
+onMounted(() => {
+  keepAlive()
+})
 const loadingStore = useLoadingStore()
 </script>
 
