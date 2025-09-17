@@ -13,6 +13,161 @@ const GUARD_BASE_URL = import.meta.env.VITE_API_GUARD_BASE_URL;
 export const AUTH_URL = `${GUARD_BASE_URL}${import.meta.env.VITE_AUTH_CONTEXT_PATH}`;
 export const EXPENSE_URL = `${BASE_URL}${import.meta.env.VITE_EXPENSE_CONTEXT_PATH}`;
 
+
+// ================== Profit Plan API ==================
+
+export const createProfitPlan = async (payload) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${GUARD_BASE_URL}/profit-plan/create`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (data.status !== "success") {
+      throw new Error(data.message || "Failed to create profit plan");
+    }
+
+    return data; // just return the response
+  } catch (err) {
+    throw err; // throw error to handle in component
+  }
+};
+
+export const sendProfitPlanMessage = async (planId, type) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(
+      `${GUARD_BASE_URL}/profit-plan/send-msg?type=${type}&plan_id=${planId}`,
+      {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.status !== "success") {
+      throw new Error(data.message || "Failed to send message");
+    }
+
+    return data;
+
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.message || "Failed to send message");
+  }
+};
+
+export async function getProfitPlans(payload) {
+  try {
+    const res = await guardApi.post(`${GUARD_BASE_URL}/profit-plan/get-all`, payload);
+
+    if (res.data.status !== "success") {
+      throw new Error(res.data.message || "Failed to fetch profit plans");
+    }
+
+    return res.data.data; // content + pagination info
+  } catch (err) {
+    if (err.response?.data?.message) {
+      throw new Error(`Fetch failed: ${err.response.data.message}`);
+    } else {
+      throw new Error(`Fetch error: ${err.message}`);
+    }
+  }
+}
+
+export async function getProfitPlanById(id) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await guardApi.get(`/profit-plan/get?id=${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (res.data.status !== "success") {
+      throw new Error(res.data.message || "Failed to fetch plan");
+    }
+
+    return res.data.data; // THIS IS THE PLAN OBJECT
+  } catch (err) {
+    if (err.response?.data?.message) {
+      throw new Error(err.response.data.message);
+    } else {
+      throw new Error(err.message);
+    }
+  }
+}
+
+export async function filloutPnl(payload) {
+  try {
+    console.log(payload)
+    const res = await guardApi.post(`${GUARD_BASE_URL}/plan-detail/fill-out`, payload);
+
+    if (res.data.status !== "success") {
+      throw new Error(res.data.message || "Failed to fetch profit plans");
+    }
+
+    return res.data.data; // content + pagination info
+  } catch (err) {
+    if (err.response?.data?.message) {
+      throw new Error(`Fetch failed: ${err.response.data.message}`);
+    } else {
+      throw new Error(`Fetch error: ${err.message}`);
+    }
+  }
+}
+
+// Update Profit Plan
+export async function updateProfitPlan(payload) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await guardApi.patch(`${GUARD_BASE_URL}/guard/profit-plan/update`, payload, {
+      headers: { token }
+    });
+
+    if (res.data.status !== "success") {
+      throw new Error(res.data.message || "Failed to update profit plan");
+    }
+
+    return res.data.data || res.data; // return updated plan or message
+  } catch (err) {
+    if (err.response?.data?.message) {
+      throw new Error(err.response.data.message);
+    } else {
+      throw new Error(err.message);
+    }
+  }
+}
+
+// Delete Profit Plan
+export async function deleteProfitPlan(id) {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await guardApi.post(`${GUARD_BASE_URL}/profit-plan/delete?id=${id}`, null, {
+      headers: { Authorization: `Bearer ${token}` } // use Authorization header
+    });
+
+    if (res.data.status !== "success") {
+      throw new Error(res.data.message || "Failed to delete profit plan");
+    }
+
+    return res.data.data || res.data;
+  } catch (err) {
+    if (err.response?.data?.message) {
+      throw new Error(err.response.data.message);
+    } else {
+      throw new Error(err.message);
+    }
+  }
+}
+
+
 // ================== Axios Instances ==================
 const api = axios.create({
   baseURL: BASE_URL,

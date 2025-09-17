@@ -153,10 +153,11 @@ const menus = [
     label: 'Investment Tracking',
     color: 'bg-sky-100 text-teal-800',
     items: [
-      { label: '🔥 Economic Event', path: '/economic-event' },
-      { label: '🔥 Signal', path: '/trading-strategy' },
-      { label: '✨ Calculator', path: '/usdc-calculator' },
-      { label: '✨ Alert', path: '/alert' },
+      { label: '🔥Economic Event', path: '/economic-event' },
+      { label: '🔥Signal', path: '/trading-strategy' },
+      { label: '✨Alert', path: '/alert' },
+      { label: '✨Calculator', path: '/usdc-calculator' },
+      { label: '💸Checklist', path: '/checklist' },
     ]
   },
   {

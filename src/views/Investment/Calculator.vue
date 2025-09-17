@@ -130,19 +130,6 @@ const buyPrice = ref(0);
 const sellPrice = ref(0);
 const currentPrice = ref(null);
 
-// Example: fetch coin price (replace with your API)
-// async function fetchCoinPrice(symbol) {
-//   try {
-//     const res = await fetch(
-//       `https://api.coingecko.com/api/v3/simple/price?ids=${symbol.toLowerCase()}&vs_currencies=usd`
-//     );
-//     const data = await res.json();
-//     currentPrice.value = data[symbol.toLowerCase()]?.usd || null;
-//   } catch (err) {
-//     console.error("Error fetching price:", err);
-//   }
-// }
-
 // Watch coin symbol change
 watch(coinSymbol, (newVal) => {
   // if (newVal) fetchCoinPrice(newVal);
