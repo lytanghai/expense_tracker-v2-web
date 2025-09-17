@@ -9,6 +9,7 @@
 
         <!-- Spot Trade Calculator -->
         <div class="rounded-2xl shadow-xl bg-white p-6 border border-gray-200 space-y-6">
+          <br><br>
           <h2 class="text-xl font-bold text-gray-800 text-center">📊 Spot Trade Calculator</h2>
           <p class="text-center text-gray-500 text-sm">Estimate your profit and loss (PnL)</p>
 

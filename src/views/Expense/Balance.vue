@@ -4,6 +4,7 @@
 
     <main class="flex-1 p-6 bg-gray-100">
       <div class="bg-white shadow-lg rounded-xl p-6 max-w-4xl mx-auto">
+        <br><br>
         <h1 class="text-2xl font-bold mb-4">Expense Balance Setting</h1>
 
         <div v-if="loading" class="text-center py-6 text-gray-500">Loading...</div>

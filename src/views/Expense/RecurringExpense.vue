@@ -2,60 +2,48 @@
   <div class="flex h-screen">
     <Sidebar />
 
-    <main class="flex-1 p-6 bg-gray-100">
-      <div class="bg-white shadow-lg rounded-xl p-6 max-w-5xl mx-auto">
-        <h1 class="text-2xl font-bold mb-6">Recurring Expense (Batch Create)</h1>
+    <main class="flex-1 p-4 bg-gray-100">
+      <div class="bg-white shadow-lg rounded-xl p-4 mx-auto max-w-md">
+        <br><br>
+        <h1 class="text-xl font-bold mb-4 text-center">Recurring Expense (Batch Create)</h1>
 
-        <!-- Table of expenses -->
-        <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-          <thead class="bg-gray-100">
-            <tr>
-              <th class="px-4 py-2 text-left">Item</th>
-              <th class="px-4 py-2 text-left">Category</th>
-              <th class="px-4 py-2 text-left">Price</th>
-              <th class="px-4 py-2 text-left">Currency</th>
-              <th class="px-4 py-2 text-left">Note</th>
-              <th class="px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(expense, index) in expenses" :key="index" class="border-t hover:bg-gray-50">
-              <td class="px-4 py-2">
-                <input v-model="expense.item" placeholder="Item" class="border rounded px-2 py-1 w-full" />
-              </td>
-              <td class="px-4 py-2">
-                <input v-model="expense.category" placeholder="Category" class="border rounded px-2 py-1 w-full" />
-              </td>
-              <td class="px-4 py-2">
-                <input type="number" v-model="expense.price" placeholder="Price"
-                  class="border rounded px-2 py-1 w-full" />
-              </td>
-              <td class="px-4 py-2">
-                <select v-model="expense.currency" class="border rounded px-2 py-1 w-full">
-                  <option value="USD">USD</option>
-                  <option value="KHR">KHR</option>
-                </select>
-              </td>
-              <td class="px-4 py-2">
-                <input v-model="expense.note" placeholder="Note" class="border rounded px-2 py-1 w-full" />
-              </td>
-              <td class="px-4 py-2 text-center">
-                <button class="text-red-500 hover:text-red-700" @click="removeExpense(index)"
-                  v-if="expenses.length > 1">
-                  ❌
-                </button>
-              </td>
-            </tr>
-          </tbody>
+        <div v-for="(expense, index) in expenses" :key="index" class="bg-gray-50 p-4 rounded-lg mb-3 shadow-sm">
+          <div class="flex flex-col space-y-2">
+            <label class="font-medium">Item</label>
+            <input v-model="expense.item" placeholder="Item" class="border rounded px-2 py-1 w-full" />
 
-        </table>
+            <label class="font-medium">Category</label>
+            <input v-model="expense.category" placeholder="Category" class="border rounded px-2 py-1 w-full" />
+
+            <label class="font-medium">Price</label>
+            <input type="number" v-model="expense.price" placeholder="Price" class="border rounded px-2 py-1 w-full" />
+
+            <label class="font-medium">Currency</label>
+            <select v-model="expense.currency" class="border rounded px-2 py-1 w-full">
+              <option value="USD">USD</option>
+              <option value="KHR">KHR</option>
+            </select>
+
+            <label class="font-medium">Note</label>
+            <input v-model="expense.note" placeholder="Note" class="border rounded px-2 py-1 w-full" />
+
+            <div class="flex justify-end mt-2">
+              <button v-if="expenses.length > 1" @click="removeExpense(index)"
+                class="text-red-500 hover:text-red-700 font-bold">
+                ❌ Remove
+              </button>
+            </div>
+          </div>
+        </div>
 
         <!-- Controls -->
-        <div class="mt-4 flex justify-end space-x-4">
-          <button class="bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600" @click="addExpense">
+        <div class="mt-4 flex flex-col space-y-2">
+          <button @click="addExpense"
+            class="bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 w-full">
             ➕ Add Row
           </button>
-          <button class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600" @click="submitBatch">
+          <button @click="submitBatch"
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 w-full">
             🚀 Submit Batch
           </button>
         </div>
@@ -69,24 +57,20 @@ import { ref } from "vue";
 import Sidebar from "@/components/Sidebar.vue";
 import { createBatchExpense } from "@/services/api";
 
-// Reactive list of expenses
 const expenses = ref([
   { item: "", category: "", price: null, currency: "", note: "" },
 ]);
 
-// Add row
 const addExpense = () => {
   expenses.value.push({ item: "", category: "", price: null, currency: "", note: "" });
 };
 
-// Remove row
 const removeExpense = (index) => {
   expenses.value.splice(index, 1);
 };
 
 const submitBatch = async () => {
   try {
-    // Convert keys to snake_case
     const payload = expenses.value.map(exp => ({
       item: exp.item,
       category: exp.category,
@@ -95,23 +79,34 @@ const submitBatch = async () => {
       note: exp.note
     }));
 
-    // Rename the root property to match backend
-    const res = await createBatchExpense(payload.map(e => ({
-      item: e.item,
-      category: e.category,
-      price: e.price,
-      currency: e.currency,
-      note: e.note
-    })));
-
+    const res = await createBatchExpense(payload);
     console.log("Batch create response:", res);
     alert("Batch expenses created successfully!");
-    // Reset form
     expenses.value = [{ item: "", category: "", price: null, currency: "", note: "" }];
   } catch (err) {
     console.error("Batch create failed:", err);
     alert("Failed to create batch expenses.");
   }
 };
-
 </script>
+
+<style scoped>
+/* Mobile-specific styling for 414px devices */
+@media screen and (max-width: 414px) {
+  main {
+    padding: 4px;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+
+  .bg-white {
+    padding: 12px;
+  }
+
+  input, select, button {
+    font-size: 14px;
+  }
+}
+</style>

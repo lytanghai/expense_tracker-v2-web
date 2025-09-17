@@ -1,38 +1,39 @@
 <template>
-  <div class="max-w-lg mx-auto space-y-6">
-    <!-- Input controls -->
-    <div class="bg-white p-4 rounded-xl shadow-md flex gap-3">
+  <div class="p-4 max-w-md mx-auto space-y-4">
+
+    <!-- Input Controls -->
+    <div class="bg-white p-3 rounded-xl shadow-md flex flex-col space-y-2">
       <input
         v-model="fromSymbol"
         placeholder="From Symbol (e.g. XAUT)"
-        class="flex-1 border rounded-lg p-2 text-sm"
+        class="border rounded-lg p-2 text-sm w-full"
       />
       <input
         v-model="toSymbol"
         placeholder="To Symbol (e.g. USD)"
-        class="flex-1 border rounded-lg p-2 text-sm"
+        class="border rounded-lg p-2 text-sm w-full"
       />
       <button
         @click="loadPrice"
-        class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
+        class="w-full px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
       >
         Fetch
       </button>
     </div>
 
     <!-- Current Price Card -->
-    <div class="bg-white shadow-xl rounded-2xl p-6 border-l-8 border-yellow-500 hover:shadow-2xl transition duration-300">
-      <div class="flex items-center mb-4">
+    <div class="bg-white shadow-xl rounded-2xl p-4 border-l-8 border-yellow-500 hover:shadow-2xl transition duration-300">
+      <div class="flex items-center mb-2">
         <div class="bg-yellow-500 p-2 rounded-full mr-3">
-          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
           </svg>
         </div>
-        <h3 class="text-lg font-semibold text-gray-700">{{ priceData.name }} Price</h3>
+        <h3 class="text-md font-semibold text-gray-700">{{ priceData.name }} Price</h3>
       </div>
 
       <div>
-        <p class="text-3xl font-bold text-gray-900 mb-1">
+        <p class="text-2xl font-bold text-gray-900 mb-1">
           ${{ priceData.price.toLocaleString() }}
         </p>
         <p class="text-sm text-gray-500">Updated: {{ priceData.last_updated }}</p>
@@ -68,8 +69,7 @@ async function loadPrice() {
     const data = await fetchCmcPrice(fromSymbol.value, toSymbol.value);
     priceData.value = data;
 
-    // Add to history
-    const date = new Date(data.last_updated).toISOString().slice(0, 19).replace('T', " "); // minute precision
+    const date = new Date(data.last_updated).toISOString().slice(0, 19).replace('T', " ");
     if (!historyList.value.find(item => item.date === date)) {
       historyList.value.push({ date, price: data.price });
     }
@@ -81,10 +81,31 @@ async function loadPrice() {
 
 onMounted(() => {
   loadPrice();
-  intervalId = setInterval(loadPrice, 60000 * 5); // poll every 5 minute
+  intervalId = setInterval(loadPrice, 60000 * 5);
 });
 
 onBeforeUnmount(() => {
   if (intervalId) clearInterval(intervalId);
 });
 </script>
+
+<style scoped>
+/* Mobile-specific adjustments for 414px width */
+@media screen and (max-width: 414px) {
+  input, select, button {
+    font-size: 14px;
+  }
+
+  .shadow-xl {
+    padding: 12px !important;
+  }
+
+  h3 {
+    font-size: 16px !important;
+  }
+
+  p.text-2xl {
+    font-size: 20px !important;
+  }
+}
+</style>
