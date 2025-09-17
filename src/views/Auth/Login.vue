@@ -1,42 +1,23 @@
-<style scoped>
-@keyframes floatUp {
-  0% {
-    transform: translateY(100px);
-    /* start at initial bottom */
-    opacity: 0;
-  }
-
-  10% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(-750px);
-    /* fly up */
-    opacity: 0;
-  }
-}
-
-.floating-coin {
-  position: absolute;
-  animation-name: floatUp;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-</style>
 <template>
   <div class="flex h-screen">
 
-    <div class="w-1/2 hidden md:flex items-center justify-center relative overflow-hidden 
-            bg-gradient-to-br from-purple-700 via-pink-500 to-yellow-400">
-
-      <img v-for="coin in coins" :key="coin.id" :src="`/src/assets/img/block${coin.img}.png`"
-        class="absolute w-12 h-12 floating-coin" :style="{
+    <!-- Left side with floating coins -->
+    <div
+      class="w-1/2 hidden md:flex items-center justify-center relative overflow-hidden 
+             bg-gradient-to-br from-purple-700 via-pink-500 to-yellow-400"
+    >
+      <img
+        v-for="coin in coins"
+        :key="coin.id"
+        :src="`/img/block${coin.img}.png`"
+        class="absolute w-12 h-12 floating-coin"
+        :style="{
           left: coin.left + '%',
           bottom: coin.bottom + 'px',
           animationDuration: coin.duration + 's',
           animationDelay: coin.delay + 's'
-        }" />
+        }"
+      />
     </div>
 
     <!-- Right: login / signup form -->
@@ -75,18 +56,15 @@
             {{ isRegister ? 'Login' : 'Register' }}
           </a>
         </p>
-
-        <!-- Hidden Wakeup Button (optional) -->
-        <button type="button" @click="wakeUpServers" style="display: none;" ref="wakeButton"></button>
       </form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { loginUser, registerUser, wakeUpServers } from '@/services/auth.js'
+import { loginUser, registerUser } from '@/services/auth.js'
 
 const router = useRouter()
 
@@ -94,20 +72,17 @@ const router = useRouter()
 function randomCoins(count = 10) {
   return Array.from({ length: count }, (_, i) => ({
     id: i,
-    left: Math.random() * 90, // horizontal position
-    bottom: Math.random() * 100, // start height
-    duration: 2 + Math.random() * 3, // speed
-    delay: Math.random() * 3, // stagger
-    img: Math.floor(Math.random() * 8) + 1 // pick block1.png to block7.png
+    left: Math.random() * 90,        // horizontal position %
+    bottom: Math.random() * 100,     // start height px
+    duration: 2 + Math.random() * 3, // speed (seconds)
+    delay: Math.random() * 3,        // stagger start
+    img: Math.floor(Math.random() * 8) + 1 // 1 → 8
   }))
 }
 
 const coins = reactive(randomCoins(12))
 const isRegister = ref(false)
 const form = reactive({ username: '', email: '', password: '' })
-
-// ✅ New: track if servers are ready
-// const serversReady = ref(false)
 
 const toggleForm = () => {
   isRegister.value = !isRegister.value
@@ -125,35 +100,41 @@ const handleLogin = () => {
       }
       router.push("/") // redirect only after success
     })
-    .catch(err => {
+    .catch(() => {
       alert("Invalid username or password")
     })
 }
 
 const handleRegister = async () => {
   try {
-    const data = await registerUser({ username: form.username, email: form.email, password: form.password })
+    await registerUser({ username: form.username, email: form.email, password: form.password })
     alert('Registration successful! Please login.')
     toggleForm()
   } catch (err) {
-    console.error(err)
     alert(err.message || 'Registration failed')
   }
 }
-
-// let serversCalled = false
-
-// onMounted(async () => {
-//   if (serversCalled) return
-//   serversCalled = true
-
-//   try {
-//     await wakeUpServers()
-//     serversReady.value = true
-//     console.log("Servers are ready")
-//   } catch (err) {
-//     console.log("Could not wake servers, still allowing login")
-//     serversReady.value = true
-//   }
-// })
 </script>
+
+<style scoped>
+@keyframes floatUp {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-750px);
+    opacity: 0;
+  }
+}
+
+.floating-coin {
+  position: absolute;
+  animation-name: floatUp;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+</style>
