@@ -126,15 +126,10 @@ export async function filloutPnl(payload) {
 export async function updateProfitPlan(payload) {
   try {
     const token = localStorage.getItem("token");
-    const res = await guardApi.patch(`${GUARD_BASE_URL}/guard/profit-plan/update`, payload, {
+    const res = await guardApi.patch(`${GUARD_BASE_URL}/profit-plan/update`, payload, {
       headers: { token }
     });
 
-    if (res.data.status !== "success") {
-      throw new Error(res.data.message || "Failed to update profit plan");
-    }
-
-    return res.data.data || res.data; // return updated plan or message
   } catch (err) {
     if (err.response?.data?.message) {
       throw new Error(err.response.data.message);
@@ -153,11 +148,6 @@ export async function deleteProfitPlan(id) {
       headers: { Authorization: `Bearer ${token}` } // use Authorization header
     });
 
-    if (res.data.status !== "success") {
-      throw new Error(res.data.message || "Failed to delete profit plan");
-    }
-
-    return res.data.data || res.data;
   } catch (err) {
     if (err.response?.data?.message) {
       throw new Error(err.response.data.message);
