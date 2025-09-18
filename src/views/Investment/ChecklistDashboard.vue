@@ -6,7 +6,7 @@
         <!-- Main Content -->
         <main class="flex-1 p-6 overflow-y-auto">
             <div class="max-w-7xl mx-auto space-y-8">
-
+                <br><br>
                 <!-- Header -->
                 <div class="text-center mb-8">
                     <h1 class="text-4xl font-extrabold text-indigo-900 drop-shadow-lg">📈 Profit Plan Dashboard</h1>
@@ -37,16 +37,21 @@
                             <option value="Success">Success</option>
                             <option value="Failed">Failed</option>
                         </select>
+
+                        <!-- Create Button with centered img -->
                         <button @click="showCreateModal = true"
-                            class="px-5 py-2 bg-green-500 text-white rounded-xl shadow hover:bg-green-600 transition">
-                            ➕ Profit Plan
+                            class="flex items-center justify-center px-5 py-2 bg-green-500 text-white rounded-xl shadow hover:bg-green-600 transition">
+                            <img src="/img/icons/create.png" alt="Create Income" class="w-5 h-5" />
                         </button>
+
+                        <!-- Apply Button -->
                         <button @click="fetchData"
-                            class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold px-5 py-2 rounded-xl shadow-lg hover:scale-105 transition-transform">
-                            Apply
+                            class="flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold px-5 py-2 rounded-xl shadow-lg hover:scale-105 transition-transform">
+                            <img src="/img/icons/save.png" alt="Create Plan" class="w-5 h-5 mr-2" />
                         </button>
                     </div>
                 </div>
+
 
                 <!-- Profit Plan Cards -->
                 <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -69,84 +74,90 @@
                         <div class="flex justify-end space-x-2 mt-4">
                             <button @click="viewPlan(plan.id)"
                                 class="px-3 py-1 bg-blue-500 text-white text-xs rounded-xl hover:bg-blue-600 shadow">
-                                View
+                                <img src="/img/icons/view.png" alt="view" class="w-5 h-5" />
                             </button>
 
                             <button @click="openUpdateModal(plan)"
                                 class="px-3 py-1 bg-yellow-500 text-white text-xs rounded-xl hover:bg-yellow-600 shadow">
-                                Update
+                                <img src="/img/icons/edit.png" alt="edit" class="w-5 h-5" />
                             </button>
 
                             <button @click="deletePlan(plan.id)"
                                 class="px-3 py-1 bg-red-500 text-white text-xs rounded-xl hover:bg-red-600 shadow">
-                                Delete
+                                <img src="/img/icons/bin.png" alt="delete" class="w-5 h-5" />
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Modal for Plan Details Checklist -->
-                <div v-if="selectedPlan" class="fixed inset-0 z-40 flex items-center justify-center p-4">
+                <div v-if="selectedPlan" class="fixed inset-0 z-40 flex items-center justify-center p-2 sm:p-4">
+                    <!-- backdrop -->
                     <div class="fixed inset-0 bg-black/40" @click="selectedPlan = null"></div>
-
+                    <!-- modal -->
                     <div
-                        class="bg-white rounded-3xl shadow-2xl w-full md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto p-6 relative">
+                        class="bg-white rounded-3xl shadow-2xl w-full max-w-lg sm:max-w-3xl md:max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 relative">
                         <button @click="selectedPlan = null"
-                            class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl">✖</button>
+                            class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">
+                            <br>
+                            <img src="/img/icons/close.png" alt="Close" class="w-10 h-10" />
 
-                        <div class="mb-6">
+                        </button>
+                        <!-- header -->
+                        <div class="mb-4 sm:mb-6">
+                            <br>
                             <h2
-                                class="text-3xl font-extrabold uppercase tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center gap-2">
+                                class="text-xl sm:text-2xl font-extrabold uppercase tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center gap-2">
                                 <span>📋</span> {{ selectedPlan.type }} Plan Checklist
                             </h2>
-                            <div class="mt-4 flex justify-end items-center space-x-2">
-                                <div class="mt-4 flex justify-end items-center space-x-2 relative">
+                            <div
+                                class="mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <div class="flex items-center gap-2 relative">
                                     <button @click="showSendOptions = !showSendOptions"
-                                        class="px-4 py-2 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 shadow">
+                                        class="px-3 py-1 sm:px-4 sm:py-2 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 shadow text-sm sm:text-base">
                                         📤 Send
                                     </button>
 
                                     <div v-if="showSendOptions"
-                                        class="absolute right-0 top-full mt-1 bg-white border shadow-lg rounded p-2 z-50">
+                                        class="absolute right-0 top-full mt-1 bg-white border shadow-lg rounded p-2 z-50 min-w-[120px]">
                                         <button @click="sendMsg('gmail')"
-                                            class="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">Gmail</button>
+                                            class="block w-full text-left px-2 py-1 hover:bg-gray-100 rounded text-sm">Gmail</button>
                                         <button @click="sendMsg('telegram')"
-                                            class="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">Telegram</button>
+                                            class="block w-full text-left px-2 py-1 hover:bg-gray-100 rounded text-sm">Telegram</button>
                                     </div>
                                 </div>
+                                <p class="text-gray-500 text-xs sm:text-sm mt-1 sm:mt-0">
+                                    Year: {{ selectedPlan.year }} | Month: {{ selectedPlan.month }} | Status:
+                                    <span :class="{
+                                        'px-2 py-1 rounded text-xs font-semibold': true,
+                                        'bg-yellow-100 text-yellow-800': selectedPlan.status === 'Pending',
+                                        'bg-green-100 text-green-800': selectedPlan.status === 'Success',
+                                        'bg-red-100 text-red-800': selectedPlan.status === 'Failed'
+                                    }">{{ selectedPlan.status }}</span>
+                                </p>
                             </div>
-                            <p class="text-gray-500 mt-1">
-                                Year: {{ selectedPlan.year }} | Month: {{ selectedPlan.month }} | Status:
-                                <span :class="{
-                                    'px-2 py-1 rounded text-xs font-semibold': true,
-                                    'bg-yellow-100 text-yellow-800': selectedPlan.status === 'Pending',
-                                    'bg-green-100 text-green-800': selectedPlan.status === 'Success',
-                                    'bg-red-100 text-red-800': selectedPlan.status === 'Failed'
-                                }">{{ selectedPlan.status }}</span>
-                            </p>
                         </div>
 
+                        <!-- table -->
                         <div class="overflow-x-auto border rounded-lg">
-                            <table class="w-full border-collapse">
-                                <thead class="bg-gray-100 text-gray-700 uppercase text-sm">
+                            <table class="w-full border-collapse text-sm">
+                                <thead class="bg-gray-100 text-gray-700 uppercase">
                                     <tr>
-                                        <th class="px-4 py-2">Day</th>
-                                        <th class="px-4 py-2">Target</th>
-                                        <th class="px-4 py-2">Result</th>
-                                        <th class="px-4 py-2">Action</th>
+                                        <th class="px-2 py-1">Day</th>
+                                        <th class="px-2 py-1">Target</th>
+                                        <th class="px-2 py-1">Result</th>
+                                        <th class="px-2 py-1">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(d, idx) in editableDetails" :key="d.id" :class="[
-                                        'hover:bg-indigo-50',
-                                        d.day < todayDay ? 'bg-red-100' : d.day === todayDay ? 'bg-green-100' : 'bg-orange-100'
-                                    ]">
-                                        <td class="px-4 py-2 text-center align-middle">{{ d.day }}</td>
-                                        <td class="px-4 py-2 text-center align-middle">{{ d.target.toFixed(2) }}</td>
-                                        <td class="px-4 py-2 text-center align-middle">
+                                    <tr v-for="(d, idx) in editableDetails" :key="d.id"
+                                        :class="['hover:bg-indigo-50', d.day < todayDay ? 'bg-red-100' : d.day === todayDay ? 'bg-green-100' : 'bg-orange-100']">
+                                        <td class="px-2 py-1 text-center">{{ d.day }}</td>
+                                        <td class="px-2 py-1 text-center">{{ d.target.toFixed(2) }}</td>
+                                        <td class="px-2 py-1 text-center">
                                             <input type="number" v-model.number="editableDetails[idx].result"
                                                 :disabled="d.day > todayDay"
-                                                class="w-24 p-1 border rounded text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-center" />
+                                                class="w-full sm:w-24 p-1 border rounded text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-center" />
                                             <div v-if="d.day < todayDay" class="mt-1 text-xs font-semibold">
                                                 <span v-if="d.result < d.target" class="text-red-300">
                                                     Incomplete ({{ (d.target - d.result).toFixed(2) }} $ left)
@@ -155,11 +166,12 @@
                                                 <span v-else class="text-orange-500">🔥</span>
                                             </div>
                                         </td>
-                                        <td class="px-4 py-2 text-center align-middle">
+                                        <td class="px-2 py-1 text-center">
                                             <button @click="updateDetail(d.id, editableDetails[idx].result)"
                                                 :disabled="d.day > todayDay"
-                                                class="px-2 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 disabled:opacity-50">
-                                                Update
+                                                class="px-2 py-1 bg-gray-200 text-white text-xs rounded hover:bg-orange-100 disabled:opacity-50">
+                                                <img src="/img/icons/edit.png" alt="edi" class="w-5 h-5" />
+
                                             </button>
                                         </td>
                                     </tr>
@@ -167,14 +179,15 @@
                             </table>
                         </div>
 
+                        <!-- totals -->
                         <div
-                            class="mt-4 flex justify-between items-center bg-indigo-50 p-4 rounded-lg font-semibold text-indigo-700">
+                            class="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-indigo-50 p-3 rounded-lg font-semibold text-indigo-700 text-sm sm:text-base gap-2">
                             <p>Grand Total: {{ grandTotal.toFixed(2) }}</p>
                             <p>Target Amount: {{ targetTotal.toFixed(2) }}</p>
                         </div>
                     </div>
-
                 </div>
+
 
                 <!-- Update Plan Modal -->
                 <div v-if="showUpdateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -203,7 +216,7 @@
                         <div class="flex justify-end mt-6">
                             <button @click="submitUpdate"
                                 class="px-5 py-2 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 shadow">
-                                Update Plan
+                                <img src="/img/icons/edit.png" alt="edit" class="w-5 h-5" />
                             </button>
                         </div>
                     </div>
@@ -270,6 +283,62 @@
                         </div>
                     </div>
                 </div>
+                <!-- Create Plan Modal -->
+                <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <!-- Overlay -->
+                    <div class="fixed inset-0 bg-black/40" @click="showCreateModal = false"></div>
+
+                    <!-- Modal Card -->
+                    <div class="bg-white rounded-3xl shadow-2xl w-full md:w-3/4 lg:w-1/2 p-6 relative">
+                        <!-- Close Button -->
+                        <button @click="showCreateModal = false"
+                            class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl">✖</button>
+
+                        <h2 class="text-2xl font-bold text-indigo-700 mb-4">Create Profit Plan</h2>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <!-- Month -->
+                            <div class="flex flex-col">
+                                <label class="text-gray-700 font-semibold mb-1">Month</label>
+                                <input v-model.number="createPayload.month" type="number" placeholder="Month"
+                                    class="w-full p-3 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-400" />
+                            </div>
+
+                            <!-- Year -->
+                            <div class="flex flex-col">
+                                <label class="text-gray-700 font-semibold mb-1">Year</label>
+                                <input v-model.number="createPayload.year" type="number" placeholder="Year"
+                                    class="w-full p-3 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-400" />
+                            </div>
+
+                            <!-- Target Amount -->
+                            <div class="flex flex-col">
+                                <label class="text-gray-700 font-semibold mb-1">Target Amount</label>
+                                <input v-model.number="createPayload.target_amount" type="number"
+                                    placeholder="Target Amount"
+                                    class="w-full p-3 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-400" />
+                            </div>
+
+                            <!-- Type -->
+                            <div class="flex flex-col">
+                                <label class="text-gray-700 font-semibold mb-1">Type</label>
+                                <select v-model="createPayload.type"
+                                    class="w-full p-3 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-400">
+                                    <option value="crypto">Crypto</option>
+                                    <option value="forex">Forex</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-6">
+                            <button @click="submitCreatePlan"
+                                class="px-5 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600 shadow">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>

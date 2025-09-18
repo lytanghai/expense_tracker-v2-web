@@ -7,6 +7,7 @@
     <main class="flex-1 bg-gray-100 p-6 min-h-screen">
       <div class="bg-white rounded-2xl shadow-lg p-6 w-full space-y-6">
         <!-- Header -->
+         <br><br>
         <h2 class="text-3xl font-extrabold text-gray-900 flex items-center gap-2">
           📈 EMA-RSI Trend Analysis
         </h2>

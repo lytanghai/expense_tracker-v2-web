@@ -22,16 +22,26 @@
             </div>
           </div>
         </div>
+      </div>
+      <!-- Toggle Button -->
+      <div class="flex justify-end mb-4 space-x-2">
+        <!-- Filter Toggle Button -->
+        <button @click="showFilters = !showFilters"
+          class="w-10 h-10 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition">
+          <img :src="showFilters ? '/img/icons/hide.png' : '/img/icons/show.png'"
+            :alt="showFilters ? 'Hide Filters' : 'Show Filters'" class="w-5 h-5" />
+        </button>
 
-        <!-- Create Button -->
+        <!-- Create Income Button -->
         <button @click="openCreateModal"
-          class="w-full md:w-auto px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition text-center">
-          + Create Expense
+          class="w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center transition">
+          <img src="/img/icons/create.png" alt="Create Income" class="w-5 h-5" />
         </button>
       </div>
 
+
       <!-- Filter Section -->
-      <div
+      <div v-if="showFilters"
         class="bg-white p-4 rounded-lg shadow-md mb-4 flex flex-col sm:flex-row sm:items-end sm:space-x-4 space-y-2 sm:space-y-0">
         <div class="flex-1 flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:space-x-2">
           <div class="flex-1">
@@ -52,9 +62,8 @@
           </div>
         </div>
         <div class="flex justify-end sm:mt-0 mt-2">
-          <button @click="applyFilters"
-            class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 w-full sm:w-auto">
-            Filter
+          <button @click="applyFilters" class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 sm:w-auto">
+            <img src="/img/icons/submit.png" alt="Create Income" class="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -125,9 +134,13 @@
             </div>
             <div class="flex justify-end space-x-2 mt-1">
               <button @click="editExpense(expense)"
-                class="px-3 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600">Edit</button>
+                class="px-3 py-1 bg-neutral-50 text-white rounded text-xs hover:bg-blue-600">
+                <img src="/img/icons/edit.png" alt="edit" class="w-5 h-5" />
+              </button>
               <button @click="deleteExpense(expense)"
-                class="px-3 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600">Delete</button>
+                class="px-3 py-1 bg-transparent text-white p-2 text-white rounded text-xs hover:bg-red-50">
+                <img src="/img/icons/bin.png" alt="delete" class="w-5 h-5" />
+              </button>
             </div>
           </div>
         </template>
@@ -136,12 +149,12 @@
       <!-- Pagination -->
       <div class="flex justify-between items-center mt-4">
         <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" :disabled="page === 0" @click="previousPage">
-          Prev
+          <img src="/img/icons/arrow_left.png" alt="arrow-left" class="w-5 h-5" />
         </button>
         <span>Page {{ page + 1 }} of {{ totalPages }}</span>
         <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" :disabled="page + 1 >= totalPages"
           @click="nextPage">
-          Next
+          <img src="/img/icons/arrow_right.png" alt="arrow-right" class="w-5 h-5" />
         </button>
       </div>
 
@@ -175,11 +188,19 @@
               <input v-model="newExpense.note" type="text" class="w-full border p-2 rounded" />
             </div>
             <div class="flex justify-end space-x-2 mt-2">
-              <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                @click="closeCreateModal">Cancel</button>
+              <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" @click="closeCreateModal">
+                <img src="/img/icons/cancel.png" alt="Cancel" class="w-5 h-5" />
+              </button>
               <button type="submit"
-                class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">{{ editingExpense ? 'Save' : 'Create'
-                }}</button>
+                class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 flex items-center justify-center">
+                <template v-if="editingExpense">
+                  <img src="/img/icons/submit.png" alt="submit" class="w-5 h-5" />
+                </template>
+                <template v-else>
+                  <img src="/img/icons/submit.png" alt="submit" class="w-5 h-5" />
+                </template>
+              </button>
+
             </div>
           </form>
         </div>
@@ -209,6 +230,16 @@ import { fetchSettings, fetchExpenses, createExpense as apiCreateExpense, delete
 import { formatPrice, truncate } from '@/services/numeric'
 import { useLoadingStore } from '@/stores/loading'
 import { parse, format } from 'date-fns'
+
+// Filters toggle
+const showFilters = ref(true)
+
+// ✅ keep only one filters object
+const filters = ref({
+  category: '',
+  item: '',
+  currency: ''
+})
 
 // Notification Alert
 import { useNotification } from '@/stores/notification'
@@ -278,7 +309,55 @@ const previousPage = async () => {
   }
 }
 
-const filters = ref({ category: '', item: '', currency: '' })
+// ------------------ EDIT EXPENSE ------------------
+const editExpense = (expense) => {
+  editingExpense.value = true
+  newExpense.value = { ...expense } // populate modal with selected expense
+  showCreateModal.value = true
+}
+
+// ------------------ DELETE EXPENSE ------------------
+const deleteExpense = async (expense) => {
+  try {
+    const action = async () => {
+      await apiDeleteExpense(expense.id)
+      notify("success", "Expense deleted!", "Your record has been removed.")
+      await loadExpenses(filters.value) // refresh list
+    }
+    confirmStore.open(`Are you sure you want to delete "${expense.item}"?`, action)
+  } catch (err) {
+    console.error(err)
+    notify("error", "Delete Failed!", "Something went wrong while deleting the expense.")
+  }
+}
+
+// ------------------ SAVE EXPENSE ------------------
+const saveExpense = async () => {
+  try {
+    const payload = { ...newExpense.value }
+    if (editingExpense.value) {
+      await updateExpense(payload.id, payload)
+      notify("success", "Expense updated!", "Your record has been updated.")
+    } else {
+      await apiCreateExpense(payload)
+      notify("success", "Expense created!", "Your record has been saved.")
+    }
+    closeCreateModal()
+    await loadExpenses(filters.value)
+  } catch (err) {
+    console.error(err)
+    notify("error", "Save Failed!", "Something went wrong while saving the expense.")
+  }
+}
+
+// ------------------ VIEW NOTE ------------------
+const viewNote = (note) => {
+  selectedNote.value = note
+  showNoteModal.value = true
+}
+
+
+// ✅ keep only one applyFilters
 const applyFilters = async () => {
   page.value = 0
   await loadExpenses(filters.value)
@@ -291,53 +370,7 @@ const openCreateModal = () => {
 }
 const closeCreateModal = () => { showCreateModal.value = false }
 
-const saveExpense = async () => {
-  try {
-    const action = async () => {
-      if (editingExpense.value) {
-        await updateExpense(newExpense.value.id, { ...newExpense.value })
-      } else {
-        await apiCreateExpense(newExpense.value)
-      }
-      notify("success", "Record Saved!", "Your record has been saved successfully.")
-      closeCreateModal()
-      await refreshExpenses()
-    }
-
-    if (editingExpense.value) {
-      confirmStore.open(`Save changes to "${newExpense.value.item}"?`, action)
-    } else {
-      await action()
-    }
-  } catch (err) {
-    console.error(err)
-    notify("error", "Save Failed", "Something went wrong while saving the expense.")
-  }
-}
-
-const deleteExpense = async (expense) => {
-  confirmStore.open(`Delete "${expense.item}"?`, async () => {
-    try {
-      await apiDeleteExpense(expense.id)
-      notify("success", "Deleted Successfully!", "Your record has been removed.")
-      await refreshExpenses()
-    } catch (err) {
-      console.error(err)
-      notify("error", "Delete Failed!", "Something went wrong while deleting.")
-    }
-  })
-}
-
-const editExpense = (expense) => {
-  editingExpense.value = true
-  newExpense.value = { ...expense }
-  showCreateModal.value = true
-}
-
-const viewNote = (note) => {
-  selectedNote.value = note
-  showNoteModal.value = true
-}
+// ... rest of your saveExpense, deleteExpense, editExpense, viewNote unchanged
 
 const groupedExpenses = computed(() => {
   const groups = {}

@@ -7,6 +7,7 @@
     <main class="flex-1 p-6">
       <div class="max-w-7xl mx-auto space-y-6">
         <!-- Header -->
+         <br><br>
         <h1 class="text-3xl font-extrabold text-gray-900 flex items-center gap-2">
           🚀 Breakout Scalper Analysis
         </h1>

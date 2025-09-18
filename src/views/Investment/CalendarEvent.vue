@@ -7,14 +7,11 @@
       <p class="text-gray-700 mb-1"><strong>Date:</strong> {{ formatDate(upcomingEvent.date) }}</p>
       <p class="text-gray-700 mb-1">
         <strong>Impact:</strong>
-        <span
-          class="px-2 py-1 rounded-full text-sm font-medium"
-          :class="{
-            'bg-green-500 text-white': upcomingEvent.impact === 'Low',
-            'bg-yellow-500 text-white': upcomingEvent.impact === 'Medium',
-            'bg-red-500 text-white': upcomingEvent.impact === 'High'
-          }"
-        >
+        <span class="px-2 py-1 rounded-full text-sm font-medium" :class="{
+          'bg-green-500 text-white': upcomingEvent.impact === 'Low',
+          'bg-yellow-500 text-white': upcomingEvent.impact === 'Medium',
+          'bg-red-500 text-white': upcomingEvent.impact === 'High'
+        }">
           {{ upcomingEvent.impact }}
         </span>
       </p>
@@ -25,19 +22,22 @@
       <h2 class="text-2xl font-bold mb-4 text-gray-800">Forex Calendar Events</h2>
 
       <!-- Filter Form -->
-      <div class="grid grid-cols-1 md:grid-cols-6 gap-3 mb-4">
+      <div class="grid grid-cols-1 md:grid-cols-6 gap-3 mb-4 items-end">
         <input v-model="filters.date" type="date" placeholder="Date" class="border rounded p-2" />
         <input v-model="filters.country" type="text" placeholder="Country" class="border rounded p-2" />
         <input v-model="filters.impact" type="text" placeholder="Impact" class="border rounded p-2" />
         <input v-model="filters.size" type="text" placeholder="Size" class="border rounded p-2" />
         <input v-model="filters.title" type="text" placeholder="Title" class="border rounded p-2" />
-        <button
-          @click="loadEvents"
-          class="col-span-1 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Filter
-        </button>
+
+        <!-- Centered Button -->
+        <div class="flex justify-center">
+          <button @click="loadEvents"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center">
+            <img src="/img/icons/submit.png" alt="Filter" class="w-5 h-5" />
+          </button>
+        </div>
       </div>
+
 
       <!-- Loading -->
       <div v-if="loading" class="text-gray-500">Loading events...</div>
@@ -47,22 +47,15 @@
         <div v-if="sortedEvents.length === 0" class="text-gray-500">No events found.</div>
 
         <ul class="divide-y divide-gray-200">
-          <li
-            v-for="(event, index) in sortedEvents"
-            :key="index"
-            class="py-3 flex flex-col md:flex-row justify-between items-start md:items-center"
-            :class="{
+          <li v-for="(event, index) in sortedEvents" :key="index"
+            class="py-3 flex flex-col md:flex-row justify-between items-start md:items-center" :class="{
               'line-through': new Date(event.date.replace(' ICT', '')) < new Date() // expired highlight
-            }"
-          >
+            }">
             <div class="mb-2 md:mb-0">
-              <p
-                class="font-semibold"
-                :class="{
-                  'text-gray-800': new Date(event.date.replace(' ICT', '')) >= new Date(),
-                  'text-red-600': new Date(event.date.replace(' ICT', '')) < new Date()
-                }"
-              >
+              <p class="font-semibold" :class="{
+                'text-gray-800': new Date(event.date.replace(' ICT', '')) >= new Date(),
+                'text-red-600': new Date(event.date.replace(' ICT', '')) < new Date()
+              }">
                 {{ event.title }}
               </p>
               <p class="text-sm text-gray-500">
@@ -73,15 +66,12 @@
             <div class="flex flex-wrap gap-2 items-center">
               <span class="text-sm text-gray-600">Forecast: {{ event.forecast || "-" }}</span>
               <span class="text-sm text-gray-600">Previous: {{ event.previous || "-" }}</span>
-              <span
-                class="px-2 py-1 rounded-full text-sm font-medium"
-                :class="{
-                  'bg-green-500 text-white': event.impact === 'Low',
-                  'bg-yellow-500 text-white': event.impact === 'Medium',
-                  'bg-orange-500 text-white': event.impact === 'High'
-                }"
-              >
-                {{ event.impact === 'High' ? " 🔥 High 🔥 ": event.impact }}
+              <span class="px-2 py-1 rounded-full text-sm font-medium" :class="{
+                'bg-green-500 text-white': event.impact === 'Low',
+                'bg-yellow-500 text-white': event.impact === 'Medium',
+                'bg-orange-500 text-white': event.impact === 'High'
+              }">
+                {{ event.impact === 'High' ? " 🔥 High 🔥 " : event.impact }}
               </span>
             </div>
           </li>

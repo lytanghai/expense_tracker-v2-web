@@ -50,13 +50,13 @@ export const sendProfitPlanMessage = async (planId, type) => {
       }
     );
 
-    const data = await res.json();
+    // const data = await res.json();
 
-    if (data.status !== "success") {
-      throw new Error(data.message || "Failed to send message");
-    }
+    // if (data.status !== "success") {
+    //   throw new Error(data.message || "Failed to send message");
+    // }
 
-    return data;
+    // return data;
 
   } catch (err) {
     console.error(err);

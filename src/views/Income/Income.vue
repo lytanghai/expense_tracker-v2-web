@@ -8,15 +8,31 @@
       <div
         class="sticky top-0 bg-gray-100 z-30 flex flex-col md:flex-row md:items-center md:justify-between px-4 pt-16 sm:pt-4 pb-4 shadow-sm">
         <h1 class="text-xl md:text-2xl font-bold mb-2 md:mb-0">Income Dashboard</h1>
-        <button @click="openCreateModal"
-          class="w-full md:w-auto px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-center">
-          + Create Income
-        </button>
+        <div class="flex space-x-2">
+          <!-- Toggle Filters Button -->
+          <button @click="showFilters = !showFilters"
+            class="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 flex items-center justify-center">
+            <template v-if="showFilters">
+              <img :src="`/img/icons/show.png`" alt="Show Filters" class="w-5 h-5" />
+            </template>
+            <template v-else>
+              <img :src="`/img/icons/hide.png`" alt="Show Filters" class="w-5 h-5" />
+            </template>
+          </button>
+
+          <!-- Create Income Button -->
+          <button @click="openCreateModal"
+            class="w-10 h-10 bg-green-500 hover:bg-green-600 flex items-center justify-center p-1">
+            <img :src="`/img/icons/create.png`" alt="Create" class="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       <!-- Filter Section -->
-      <div
+      <div v-if="showFilters"
         class="bg-white p-4 rounded-lg shadow-md mb-4 flex flex-col sm:flex-row sm:items-end sm:space-x-4 space-y-2 sm:space-y-0">
+
+        <!-- Category -->
         <div class="flex-1">
           <label class="block text-sm font-medium mb-1">Category</label>
           <div class="flex flex-col space-y-2">
@@ -28,16 +44,12 @@
               <option value="Airdrop">Airdrop</option>
               <option value="__custom__">User Input</option>
             </select>
-            <input
-              v-if="filters.category === '__custom__'"
-              v-model="filters.customCategory"
-              type="text"
-              placeholder="Enter custom category"
-              class="w-full border p-2 rounded"
-            />
+            <input v-if="filters.category === '__custom__'" v-model="filters.customCategory" type="text"
+              placeholder="Enter custom category" class="w-full border p-2 rounded" />
           </div>
         </div>
 
+        <!-- Type -->
         <div class="flex-1">
           <label class="block text-sm font-medium mb-1">Type</label>
           <select v-model="filters.pnl_type" class="w-full border p-2 rounded">
@@ -47,6 +59,7 @@
           </select>
         </div>
 
+        <!-- Currency -->
         <div class="flex-1">
           <label class="block text-sm font-medium mb-1">Currency</label>
           <select v-model="filters.currency" class="w-full border p-2 rounded">
@@ -56,9 +69,11 @@
           </select>
         </div>
 
+        <!-- Filter Button -->
         <div class="flex justify-end sm:mt-0 mt-2">
-          <button @click="applyFilters"
-            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Filter</button>
+          <button @click="applyFilters" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+            <img src="/img/icons/submit.png" alt="Create Income" class="w-5 h-5" />
+          </button>
         </div>
       </div>
 
@@ -116,11 +131,13 @@
                 View
               </button>
             </div>
-            <div class="flex flex-col space-y-1 ml-2">
+            <div class="flex justify-end space-x-2 mt-1">
               <button @click="editIncome(income)"
-                class="px-2 py-1 text-white rounded bg-blue-500 hover:bg-blue-600 text-sm">Edit</button>
+                class="px-3 py-1 bg-neutral-50 text-white rounded text-xs hover:bg-blue-600">
+                <img src="/img/icons/edit.png" alt="Cancel" class="w-5 h-5" /></button>
               <button @click="deleteIncome(income)"
-                class="px-2 py-1 text-white rounded bg-red-500 hover:bg-red-600 text-sm">Delete</button>
+                class="px-3 py-1 bg-transparent text-white p-2 text-white rounded text-xs hover:bg-red-50">
+                <img src="/img/icons/bin.png" alt="Cancel" class="w-5 h-5" /></button>
             </div>
           </div>
         </template>
@@ -128,11 +145,15 @@
 
       <!-- Pagination -->
       <div class="flex justify-between items-center mt-4">
-        <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" :disabled="page === 0"
-          @click="previousPage">Prev</button>
+        <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" :disabled="page === 0" @click="previousPage">
+          <img src="/img/icons/arrow_left.png" alt="arrow-left" class="w-5 h-5" />
+
+        </button>
         <span>Page {{ page + 1 }} of {{ totalPages }}</span>
         <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" :disabled="page + 1 >= totalPages"
-          @click="nextPage">Next</button>
+          @click="nextPage">
+          <img src="/img/icons/arrow_right.png" alt="arrow-right" class="w-5 h-5" />
+        </button>
       </div>
 
       <!-- Create/Edit Income Modal -->
@@ -152,14 +173,8 @@
                   <option value="Airdrop">Airdrop</option>
                   <option value="__custom__">Other</option>
                 </select>
-                <input
-                  v-if="newIncome.category === '__custom__'"
-                  v-model="newIncome.customCategory"
-                  type="text"
-                  placeholder="Enter custom category"
-                  class="w-full border p-2 rounded"
-                  required
-                />
+                <input v-if="newIncome.category === '__custom__'" v-model="newIncome.customCategory" type="text"
+                  placeholder="Enter custom category" class="w-full border p-2 rounded" required />
               </div>
             </div>
             <div>
@@ -189,10 +204,16 @@
               <input v-model="newIncome.note" type="text" class="w-full border p-2 rounded" />
             </div>
             <div class="flex justify-end space-x-2 mt-2">
-              <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                @click="closeCreateModal">Cancel</button>
-              <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                {{ editingIncome ? 'Save' : 'Create' }}
+              <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" @click="closeCreateModal">
+                <img src="/img/icons/cancel.png" alt="Cancel" class="w-5 h-5" />
+              </button>
+              <button type="submit" class="px-4 py-2 bg-gray-300 text-white rounded hover:bg-green-600">
+                <template v-if="editIncome">
+                  <img src="/img/icons/save.png" alt="save" class="w-5 h-5" />
+                </template>
+                <template v-else>
+                  <img src="/img/icons/cancel.png" alt="cancel" class="w-5 h-5" />
+                </template>
               </button>
             </div>
           </form>
@@ -237,6 +258,9 @@ const page = ref(0)
 const size = 10
 const totalPages = ref(1)
 
+// Toggle Filters
+const showFilters = ref(true)
+
 // CRUD Modal
 const showCreateModal = ref(false)
 const editingIncome = ref(false)
@@ -245,6 +269,14 @@ const newIncome = ref({ id: null, pnl: 0, currency: 'USD', category: '', customC
 // Note modal
 const showNoteModal = ref(false)
 const selectedNote = ref("")
+
+// Filters
+const filters = ref({
+  category: '',
+  customCategory: '',
+  pnl_type: '',
+  currency: ''
+})
 
 const truncateNote = (note, length = 30) => {
   if (!note) return "-"
@@ -300,7 +332,6 @@ const openCreateModal = () => {
 }
 const closeCreateModal = () => { showCreateModal.value = false }
 
-// Normalize category before save
 const normalizeIncomeCategory = (income) => {
   return {
     ...income,
@@ -308,7 +339,6 @@ const normalizeIncomeCategory = (income) => {
   }
 }
 
-// ---------------- SAVE INCOME ----------------
 const saveIncome = async () => {
   try {
     const payload = normalizeIncomeCategory(newIncome.value)
@@ -329,7 +359,6 @@ const saveIncome = async () => {
   }
 }
 
-// ---------------- EDIT INCOME ----------------
 const editIncome = (income) => {
   editingIncome.value = true
   newIncome.value = {
@@ -340,7 +369,6 @@ const editIncome = (income) => {
   showCreateModal.value = true
 }
 
-// ---------------- DELETE INCOME ----------------
 const deleteIncome = async (income) => {
   try {
     const action = async () => {
@@ -354,14 +382,6 @@ const deleteIncome = async (income) => {
     notify("error", "Delete Failed!", "Something went wrong while deleting the income.")
   }
 }
-
-// Filters
-const filters = ref({
-  category: '',
-  customCategory: '',
-  pnl_type: '',
-  currency: ''
-})
 
 const applyCategoryFilter = (filtersObj) => {
   return {

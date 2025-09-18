@@ -3,30 +3,23 @@
 
     <!-- Input Controls -->
     <div class="bg-white p-3 rounded-xl shadow-md flex flex-col space-y-2">
-      <input
-        v-model="fromSymbol"
-        placeholder="From Symbol (e.g. XAUT)"
-        class="border rounded-lg p-2 text-sm w-full"
-      />
-      <input
-        v-model="toSymbol"
-        placeholder="To Symbol (e.g. USD)"
-        class="border rounded-lg p-2 text-sm w-full"
-      />
-      <button
-        @click="loadPrice"
-        class="w-full px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
-      >
-        Fetch
+      <input v-model="fromSymbol" placeholder="From Symbol (e.g. XAUT)" class="border rounded-lg p-2 text-sm w-full" />
+      <input v-model="toSymbol" placeholder="To Symbol (e.g. USD)" class="border rounded-lg p-2 text-sm w-full" />
+      <button @click="loadPrice"
+        class="w-full flex items-center justify-center bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition p-2">
+        <img src="/img/icons/cloud.png" alt="Load" class="w-5 h-5" />
       </button>
+
     </div>
 
     <!-- Current Price Card -->
-    <div class="bg-white shadow-xl rounded-2xl p-4 border-l-8 border-yellow-500 hover:shadow-2xl transition duration-300">
+    <div
+      class="bg-white shadow-xl rounded-2xl p-4 border-l-8 border-yellow-500 hover:shadow-2xl transition duration-300">
       <div class="flex items-center mb-2">
         <div class="bg-yellow-500 p-2 rounded-full mr-3">
           <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+            <path
+              d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
           </svg>
         </div>
         <h3 class="text-md font-semibold text-gray-700">{{ priceData.name }} Price</h3>
@@ -92,7 +85,10 @@ onBeforeUnmount(() => {
 <style scoped>
 /* Mobile-specific adjustments for 414px width */
 @media screen and (max-width: 414px) {
-  input, select, button {
+
+  input,
+  select,
+  button {
     font-size: 14px;
   }
 

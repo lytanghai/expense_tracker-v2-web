@@ -6,10 +6,10 @@
       <!-- Header -->
       <div
         class="sticky top-0 bg-gray-100 z-30 flex flex-col md:flex-row md:items-center md:justify-between px-4 pt-16 sm:pt-4 pb-4 shadow-md">
-        <h1 class="text-3xl font-bold mb-2 md:mb-0 text-gray-800">Budget Planner</h1>
+        <h1 class="text-3xl font-bold mb-2 md:mb-0 text-gray-800 rounded">Budget Planner</h1>
         <button @click="openCreateModal"
-          class="w-full md:w-auto px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-md transition">
-          + Create Plan
+          class="w-10 h-10 bg-green-500 hover:bg-green-600 flex items-center justify-center p-1">
+          <img :src="`/img/icons/create.png`" alt="Create" class="w-5 h-5" />
         </button>
       </div>
 
@@ -79,13 +79,16 @@
           <div class="flex justify-between mt-4 space-x-2">
             <button @click="openDepositModal(plan)"
               class="flex-1 px-2 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs">💰
-              Deposit</button>
+              Deposit
+            </button>
             <button @click="deletePlan(plan)"
               class="flex-1 px-2 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-xs">🗑️
-              Delete</button>
+              Delete
+            </button>
             <button @click="viewHistory(plan)"
               class="flex-1 px-2 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-xs">📜
-              History</button>
+              History
+            </button>
           </div>
         </div>
       </div>
@@ -117,14 +120,26 @@
               :style="{ width: ((plan.progress ?? (plan.current_amount / plan.target_amount * 100)) + '%'), background: 'linear-gradient(to right, #4ade80, #16a34a)' }">
             </div>
           </div>
-          <div class="flex justify-between mt-2 space-x-2">
+          <div class="flex justify-center items-center mt-4 gap-2">
+            <!-- Deposit Button -->
             <button @click="openDepositModal(plan)"
-              class="flex-1 px-2 py-1 text-white bg-blue-500 rounded-lg hover:bg-blue-600 text-xs">Deposit</button>
+              class="flex-1 flex items-center justify-center p-2 bg-blue-100 rounded-lg hover:bg-blue-600 transition">
+              <img src="/img/icons/deposit.png" alt="Deposit" class="w-5 h-5" />
+            </button>
+
+            <!-- Delete Button -->
             <button @click="deletePlan(plan)"
-              class="flex-1 px-2 py-1 text-white bg-red-500 rounded-lg hover:bg-red-600 text-xs">Delete</button>
+              class="flex-1 flex items-center justify-center p-2 bg-red-100 rounded-lg hover:bg-red-600 transition">
+              <img src="/img/icons/bin.png" alt="Delete" class="w-5 h-5" />
+            </button>
+
+            <!-- History Button -->
             <button @click="viewHistory(plan)"
-              class="flex-1 px-2 py-1 text-white bg-green-500 rounded-lg hover:bg-green-600 text-xs">History</button>
+              class="flex-1 flex items-center justify-center p-2 bg-green-100 rounded-lg hover:bg-green-600 transition">
+              <img src="/img/icons/history.png" alt="History" class="w-5 h-5" />
+            </button>
           </div>
+
         </div>
       </div>
 
@@ -153,8 +168,9 @@
           </div>
 
           <div class="flex justify-end mt-4">
-            <button @click="showHistoryModal = false"
-              class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Close</button>
+            <button @click="showHistoryModal = false" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+              <img src="/img/icons/close.png" alt="close" class="w-5 h-5" />
+            </button>
           </div>
         </div>
       </div>
@@ -179,9 +195,12 @@
               </select>
             </div>
             <div class="flex justify-end space-x-2 mt-2">
-              <button type="button" @click="closeDepositModal"
-                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
-              <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Deposit</button>
+              <button type="button" @click="closeDepositModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                <img src="/img/icons/cancel.png" alt="Cancel" class="w-5 h-5" />
+              </button>
+              <button type="submit" class="px-4 py-2 bg-blue-100 text-white rounded hover:bg-blue-600">
+                <img src="/img/icons/deposit.png" alt="deposit" class="w-5 h-5" />
+              </button>
             </div>
           </form>
         </div>
@@ -261,9 +280,14 @@
             <!-- Buttons -->
             <div class="flex justify-end space-x-2 mt-4">
               <button type="button" @click="closeCreateModal"
-                class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                <img src="/img/icons/cancel.png" alt="Cancel" class="w-5 h-5" />
+
+              </button>
               <button type="submit"
-                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Create</button>
+                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                <img src="/img/icons/submit.png" alt="Create Income" class="w-5 h-5" />
+              </button>
             </div>
 
           </form>

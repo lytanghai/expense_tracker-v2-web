@@ -71,8 +71,9 @@
         <!-- Footer -->
         <div class="border-t border-gray-200 p-4 pb-20 sm:pb-4">
           <button @click="logout"
-            class="w-full flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-            Logout
+            class="w-full flex items-center justify-center px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-red-600 transition">
+            <img src="/img/icons/logout.png" alt="logout" class="w-5 h-5" />
+
           </button>
           <p class="text-xs text-gray-500 text-center mt-2">Version: {{ version }}</p>
         </div>
@@ -153,11 +154,11 @@ const menus = [
     label: 'Investment Tracking',
     color: 'bg-sky-100 text-teal-800',
     items: [
-      { label: '🔥Economic Event', path: '/economic-event' },
-      { label: '🔥Signal', path: '/trading-strategy' },
+      { label: '🔥 Economic Event', path: '/economic-event' },
+      { label: '🔥 Signal', path: '/trading-strategy' },
       // { label: '✨Alert', path: '/alert' },
-      { label: '✨Calculator', path: '/usdc-calculator' },
-      { label: '💸Checklist', path: '/checklist' },
+      { label: '✨ Calculator', path: '/usdc-calculator' },
+      { label: '💸 Checklist', path: '/checklist' },
     ]
   },
   {
