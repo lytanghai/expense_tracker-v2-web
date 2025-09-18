@@ -68,7 +68,7 @@
                         </div>
                         <p class="text-sm text-indigo-700">Type: <span class="capitalize">{{ plan.type }}</span></p>
                         <p class="text-sm text-indigo-700">Year: {{ plan.year }}, Month: {{ plan.month }}</p>
-                        <p class="text-sm text-indigo-700">Target: {{ plan.target }} | Result: {{ plan.result }}</p>
+                        <p class="text-sm text-indigo-700">Target: {{ formatPrice(plan.target, "$") }} | Result: {{ formatPrice(plan.result, "$") }}</p>
                         <p class="text-sm text-indigo-500 mt-1">{{ plan.created_at }}</p>
 
                         <div class="flex justify-end space-x-2 mt-4">
@@ -348,6 +348,11 @@
 import { reactive, ref, computed, onMounted } from "vue";
 import Sidebar from "@/components/Sidebar.vue";
 import { createProfitPlan, sendProfitPlanMessage, getProfitPlans, getProfitPlanById, filloutPnl, updateProfitPlan, deleteProfitPlan } from "@/services/api";
+import {formatPrice} from "@/services/numeric"
+import { useConfirmStore } from "@/stores/confirm";
+
+const confirmStore = useConfirmStore();
+
 
 const popupMessage = ref("");
 const showPopup = ref(false);
@@ -460,25 +465,24 @@ const submitUpdate = async () => {
 };
 
 // Delete plan
-const deletePlan = async (id) => {
-    if (!confirm("Are you sure you want to delete this plan?")) return;
-
+const deletePlan = (id) => {
+  confirmStore.open("Are you sure you want to delete this plan?", async () => {
     try {
-        const res = await deleteProfitPlan(id);
+      const res = await deleteProfitPlan(id);
 
-        // Remove the deleted plan from the local state
-        const idx = profitPlans.content.findIndex(p => p.id === id);
-        if (idx !== -1) profitPlans.content.splice(idx, 1);
+      // Remove the deleted plan from local state
+      const idx = profitPlans.content.findIndex(p => p.id === id);
+      if (idx !== -1) profitPlans.content.splice(idx, 1);
 
-        popupMessage.value = res?.message || "Plan deleted successfully!";
-        showPopup.value = true;
-        setTimeout(() => showPopup.value = false, 3000);
-
+      popupMessage.value = res?.message || "Plan deleted successfully!";
+      showPopup.value = true;
+      setTimeout(() => showPopup.value = false, 3000);
     } catch (err) {
-        popupMessage.value = err.message || "Delete failed!";
-        showPopup.value = true;
-        setTimeout(() => showPopup.value = false, 3000);
+      popupMessage.value = err.message || "Delete failed!";
+      showPopup.value = true;
+      setTimeout(() => showPopup.value = false, 3000);
     }
+  });
 };
 
 // Update plan detail
