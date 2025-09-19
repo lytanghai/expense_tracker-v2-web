@@ -17,7 +17,8 @@
         </div>
 
         <!-- Filters Card -->
-        <div class="bg-white shadow-2xl rounded-3xl border border-indigo-300 p-6 hover:shadow-indigo-400 transition-all">
+        <div
+          class="bg-white shadow-2xl rounded-3xl border border-indigo-300 p-6 hover:shadow-indigo-400 transition-all">
           <h2 class="text-2xl font-bold text-indigo-800 mb-4">🔎 Filters</h2>
           <div class="grid gap-4 md:grid-cols-6">
             <input v-model="filters.id" type="number" placeholder="ID"
@@ -26,12 +27,14 @@
               class="w-full p-3 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-400" />
             <input v-model="filters.month" type="number" placeholder="Month"
               class="w-full p-3 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-400" />
-            <select v-model="filters.type" class="w-full p-3 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-400">
+            <select v-model="filters.type"
+              class="w-full p-3 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-400">
               <option value="">All Types</option>
               <option value="crypto">Crypto</option>
               <option value="forex">Forex</option>
             </select>
-            <select v-model="filters.status" class="w-full p-3 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-400">
+            <select v-model="filters.status"
+              class="w-full p-3 rounded-xl border border-indigo-300 focus:ring-2 focus:ring-indigo-400">
               <option value="">All Status</option>
               <option value="Pending">Pending</option>
               <option value="Success">Success</option>
@@ -47,7 +50,7 @@
             <!-- Apply Button -->
             <button @click="fetchData"
               class="flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold px-5 py-2 rounded-xl shadow-lg hover:scale-105 transition-transform">
-              <img src="/img/icons/save.png" alt="Create Plan" class="w-5 h-5 mr-2" />
+              <img src="/img/icons/save.png" alt="Save" class="w-5 h-5 mr-2" />
             </button>
           </div>
         </div>
@@ -97,7 +100,8 @@
           <!-- Overlay -->
           <div class="fixed inset-0 bg-black/40" @click="selectedPlan = null"></div>
 
-          <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 relative z-50">
+          <div
+            class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 relative z-50">
             <button @click="selectedPlan = null"
               class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">✖</button>
 
@@ -108,8 +112,8 @@
               <button @click="showSendOptions = !showSendOptions"
                 class="inline-flex justify-center w-full px-4 py-2 bg-indigo-500 text-white font-medium rounded hover:bg-indigo-600 focus:outline-none">
                 Send Message
-                <svg class="ml-2 -mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"
-                  viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="ml-2 -mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -119,11 +123,11 @@
                 <div class="py-1">
                   <button @click="sendMsg('telegram')"
                     class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Telegram
+                    Telegram 💬
                   </button>
                   <button @click="sendMsg('gmail')"
                     class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Gmail
+                    Gmail 📨
                   </button>
                 </div>
               </div>
@@ -144,20 +148,22 @@
                   <td class="px-3 py-2 border">{{ detail.day }}</td>
                   <td class="px-3 py-2 border">{{ formatPrice(detail.target, selectedPlan.currency) }}</td>
                   <td class="px-3 py-2 border">
-                    <input v-model.number="detail.result" type="number" class="w-full p-1 border border-gray-300 rounded" />
+                    <input v-model.number="detail.result" type="number"
+                      class="w-20 text-center p-1 border border-gray-300 rounded disabled:bg-gray-100 disabled:text-gray-400"
+                      :disabled="detail.day > today" />
                   </td>
                   <td class="px-3 py-2 border">
-                    <button @click="updateDetail(detail.id, detail.result)"
+                    <button v-if="detail.day <= today" @click="updateDetail(detail.id, detail.result)"
                       class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
-                      Update
+                      <img src="/img/icons/edit.png" alt="edit" class="w-5 h-5" />
                     </button>
                   </td>
                 </tr>
               </tbody>
             </table>
 
-            <p class="mt-4 font-semibold">Grand Total: {{ grandTotal }} {{ selectedPlan.currency }}</p>
-            <p class="font-semibold">Target Total: {{ targetTotal }} {{ selectedPlan.currency }}</p>
+            <p class="mt-4 font-semibold">💸 Grand Total: {{ grandTotal }} {{ selectedPlan.currency }}</p>
+            <p class="font-semibold">💸 Target Total: {{ targetTotal }} {{ selectedPlan.currency }}</p>
           </div>
         </div>
 
@@ -166,6 +172,64 @@
           class="fixed top-20 right-10 bg-green-100 text-green-700 px-4 py-2 rounded-lg shadow animate-slide-in z-50">
           {{ popupMessage }}
         </div>
+        <!-- Create Plan Modal -->
+        <div v-if="showCreateModal" class="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+          <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-6 relative">
+            <button @click="showCreateModal = false"
+              class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">
+              ✖
+            </button>
+            <h2 class="text-xl font-bold text-indigo-700 mb-4">
+              ➕ Create Profit Plan
+            </h2>
+
+            <form @submit.prevent="submitCreatePlan" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Month:</label>
+                <input v-model="createPayload.month" type="number" placeholder="Month"
+                  class="w-full p-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Year:</label>
+                <input v-model="createPayload.year" type="number" placeholder="Year"
+                  class="w-full p-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Target Amount:</label>
+                <input v-model="createPayload.target_amount" type="number" placeholder="Target Amount"
+                  class="w-full p-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Type:</label>
+                <select v-model="createPayload.type"
+                  class="w-full p-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                  <option value="crypto">Crypto</option>
+                  <option value="forex">Forex</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Currency:</label>
+                <select v-model="createPayload.currency"
+                  class="w-full p-2 border rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                  <option value="USD">USD</option>
+                  <option value="USC">USC</option>
+                </select>
+              </div>
+
+              <button type="submit"
+                class="w-full flex items-center justify-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+                <img src="/img/icons/save.png" alt="Save" class="w-5 h-5" />
+              </button>
+
+            </form>
+          </div>
+        </div>
+
+
       </div>
     </main>
   </div>
@@ -178,6 +242,7 @@ import { createProfitPlan, sendProfitPlanMessage, getProfitPlans, getProfitPlanB
 import { formatPrice } from "@/services/numeric";
 import { useConfirmStore } from "@/stores/confirm";
 
+const today = new Date().getDate();
 const confirmStore = useConfirmStore();
 const popupMessage = ref("");
 const showPopup = ref(false);
@@ -293,15 +358,20 @@ const sendMsg = async (type) => {
   }
 };
 
-
-
 onMounted(fetchData);
 </script>
 
 <style scoped>
 @keyframes slide-in {
-  0% { opacity: 0; transform: translateY(-20px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-slide-in {
